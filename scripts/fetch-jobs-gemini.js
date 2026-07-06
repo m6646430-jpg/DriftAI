@@ -93,14 +93,18 @@ function normalize(raw) {
     const key = (j.role + j.company).toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
+    // Locations/salaries often list several cities/ranges — keep just the first,
+    // cleanly, so nothing gets cut off mid-word or mid-number.
+    const firstLoc = String(j.location || '').split(/\s*[/;]\s*/)[0].trim().slice(0, 70);
+    const firstSalary = j.salary ? String(j.salary).split(/\s*;\s*/)[0].trim().slice(0, 60) : null;
     out.push({
       id: 'g' + out.length,
       role: String(j.role).slice(0, 90),
       company: String(j.company).slice(0, 60),
-      location: String(j.location || '').slice(0, 60),
+      location: firstLoc,
       country,
       category,
-      salary: j.salary ? String(j.salary).slice(0, 40) : null,
+      salary: firstSalary,
       remote: 'On-site / Hybrid',
       sponsor: j.sponsor ? String(j.sponsor).slice(0, 40) : null,
       posted: j.posted ? String(j.posted).slice(0, 30) : 'Recently posted',
