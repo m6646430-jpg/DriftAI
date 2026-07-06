@@ -15,6 +15,14 @@ set -euo pipefail
 # Always run from the repo root, wherever this script is called from.
 cd "$(dirname "$0")/.."
 
+# Load secrets from an untracked local file (scripts/.env) if present.
+# This keeps your GEMINI_API_KEY OFF GitHub — the file is gitignored.
+if [ -f scripts/.env ]; then
+  set -a
+  . scripts/.env
+  set +a
+fi
+
 # Which branch Netlify deploys from (change to "july-2026" while testing).
 DEPLOY_BRANCH="${DRIFTAI_DEPLOY_BRANCH:-main}"
 
