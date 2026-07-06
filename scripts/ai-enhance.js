@@ -36,7 +36,7 @@ async function callModel(model, userPayload, key) {
     headers: {
       Authorization: `Bearer ${key}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://driftai.club',
+      'HTTP-Referer': 'https://driftai.info',
       'X-Title': 'driftai-jobs',
     },
     body: JSON.stringify({
