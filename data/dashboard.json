@@ -1,0 +1,22 @@
+{
+  "revenueGoal": 5000,
+  "currency": "USD",
+  "periodLabel": "Jul – Dec 2026",
+  "orders": [
+    { "id": "ORD-001", "client": "Jasmine L.", "product": "Resume + Cover Letter", "amount": 99.99, "status": "Delivered", "date": "2026-07-02", "market": "CA" },
+    { "id": "ORD-002", "client": "David K.", "product": "Resume Only", "amount": 79.99, "status": "Writing", "date": "2026-07-04", "market": "CA" },
+    { "id": "ORD-003", "client": "Sara N.", "product": "Complete Package", "amount": 149.99, "status": "New", "date": "2026-07-05", "market": "US" },
+    { "id": "ORD-004", "client": "Amit R.", "product": "Community Membership", "amount": 9.99, "status": "Delivered", "date": "2026-07-05", "market": "IN" },
+    { "id": "ORD-005", "client": "Priya S.", "product": "Job Hunt Starter", "amount": 199.99, "status": "New", "date": "2026-07-06", "market": "CA" }
+  ],
+  "content": [
+    { "reel": 1, "title": "Why your resume gets rejected in 6 seconds", "day": "Mon Jul 6", "done": false },
+    { "reel": 2, "title": "3 resume mistakes killing your chances", "day": "Wed Jul 8", "done": false },
+    { "reel": 3, "title": "Before/After resume transformation", "day": "Fri Jul 10", "done": false },
+    { "reel": 4, "title": "Indian resume vs Canadian resume", "day": "Sun Jul 12", "done": false },
+    { "reel": 5, "title": "AI is reading your resume before any human", "day": "Mon Jul 13", "done": false },
+    { "reel": 6, "title": "Don't use ChatGPT to write your resume", "day": "Wed Jul 15", "done": false },
+    { "reel": 7, "title": "This Week in AI — Ep. 1", "day": "Fri Jul 17", "done": false },
+    { "reel": 8, "title": "5 jobs AI will NOT replace by 2030", "day": "Sun Jul 19", "done": false }
+  ]
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>DriftAI — Command Center</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    .admin-wrap { max-width: 1180px; margin: 0 auto; padding: 40px 28px 80px; }
+    .admin-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+    .admin-head h1 { font-size: 30px; font-weight: 900; }
+    .admin-head .stamp { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+    .grid { display: grid; gap: 18px; }
+    .cards-4 { grid-template-columns: repeat(4, 1fr); margin: 24px 0; }
+    .cards-2 { grid-template-columns: 1.4fr 1fr; }
+    @media (max-width: 860px) { .cards-4 { grid-template-columns: repeat(2, 1fr); } .cards-2 { grid-template-columns: 1fr; } }
+
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 22px; }
+    .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 16px; font-weight: 700; }
+
+    .stat-num { font-size: 30px; font-weight: 900; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; }
+
+    /* revenue hero */
+    .rev-card { background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(79,142,247,0.1)); border-color: rgba(124,58,237,0.35); }
+    .rev-num { font-size: 44px; font-weight: 900; }
+    .rev-goal { font-size: 14px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+    .rev-track { background: rgba(255,255,255,0.08); border-radius: 99px; height: 14px; margin-top: 18px; overflow: hidden; }
+    .rev-fill { height: 14px; border-radius: 99px; background: linear-gradient(90deg, #4f8ef7, #a78bfa); transition: width 1s ease; }
+    .rev-pct { font-size: 13px; font-weight: 700; color: #a78bfa; margin-top: 8px; }
+
+    /* kanban */
+    .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 720px) { .kanban { grid-template-columns: 1fr; } }
+    .kan-col { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; }
+    .kan-col-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+    .kan-badge { font-size: 11px; padding: 2px 9px; border-radius: 99px; font-weight: 700; }
+    .b-new { background: rgba(96,165,250,0.15); color: #60a5fa; }
+    .b-writing { background: rgba(251,191,36,0.15); color: #fbbf24; }
+    .b-delivered { background: rgba(52,211,153,0.15); color: #34d399; }
+    .kan-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+    .kan-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .kan-client { font-size: 13px; font-weight: 700; }
+    .kan-amt { font-size: 13px; font-weight: 800; color: #34d399; }
+    .kan-product { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .kan-date { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 4px; }
+
+    /* market */
+    .market-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; font-weight: 600; }
+    .market-row:last-child { border: none; }
+    .market-amt { color: #60a5fa; font-weight: 800; }
+
+    /* content checklist */
+    .content-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; transition: background 0.15s; }
+    .content-item:hover { background: rgba(255,255,255,0.03); }
+    .content-item input { width: 18px; height: 18px; accent-color: #7c3aed; cursor: pointer; }
+    .ci-reel { font-size: 12px; font-weight: 800; color: #a78bfa; width: 28px; }
+    .ci-title { flex: 1; font-size: 13px; }
+    .ci-day { font-size: 11px; color: rgba(255,255,255,0.35); }
+    .content-item.done .ci-title { text-decoration: line-through; color: rgba(255,255,255,0.35); }
+
+    .admin-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<div class="admin-wrap">
+  <div class="admin-head">
+    <h1>Drift<span class="gradient-text">AI</span> Command Center</h1>
+    <div class="stamp" id="jobsUpdated">Loading…</div>
+  </div>
+  <p style="color:rgba(255,255,255,0.45);font-size:13px;">Private dashboard · update <code style="color:#a78bfa;">data/dashboard.json</code> to change numbers</p>
+
+  <!-- TOP STATS -->
+  <div class="grid cards-4">
+    <div class="card"><div class="stat-num" id="statOrders" style="color:#60a5fa;">–</div><div class="stat-label">Total orders</div></div>
+    <div class="card"><div class="stat-num" id="statDelivered" style="color:#34d399;">–</div><div class="stat-label">Delivered</div></div>
+    <div class="card"><div class="stat-num" id="statRemaining" style="color:#fbbf24;">–</div><div class="stat-label">To reach $5K goal</div></div>
+    <div class="card"><div class="stat-num" id="statJobs" style="color:#a78bfa;">–</div><div class="stat-label">Live jobs on board</div></div>
+  </div>
+
+  <!-- REVENUE + MARKETS -->
+  <div class="grid cards-2" style="margin-bottom:18px;">
+    <div class="card rev-card">
+      <h3>Revenue toward goal</h3>
+      <div class="rev-num" id="revNum">–</div>
+      <div class="rev-goal" id="revGoal"></div>
+      <div class="rev-track"><div class="rev-fill" id="revBar" style="width:0%"></div></div>
+      <div class="rev-pct" id="revPct"></div>
+    </div>
+    <div class="card">
+      <h3>Revenue by market</h3>
+      <div id="marketList"></div>
+    </div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="card" style="margin-bottom:18px;">
+    <h3>Order pipeline</h3>
+    <div class="kanban">
+      <div class="kan-col">
+        <div class="kan-col-head"><span>New</span><span class="kan-badge b-new" id="cntNew">0</span></div>
+        <div id="colNew"></div>
+      </div>
+      <div class="kan-col">
+        <div class="kan-col-head"><span>Writing</span><span class="kan-badge b-writing" id="cntWriting">0</span></div>
+        <div id="colWriting"></div>
+      </div>
+      <div class="kan-col">
+        <div class="kan-col-head"><span>Delivered</span><span class="kan-badge b-delivered" id="cntDelivered">0</span></div>
+        <div id="colDelivered"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT CHECKLIST -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="margin-bottom:0;">Content calendar</h3>
+      <span style="font-size:12px;font-weight:700;color:#34d399;" id="contentProgress"></span>
+    </div>
+    <div id="contentList" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="admin-links">
+    <a href="index.html" class="btn btn-outline">← Back to site</a>
+    <a href="jobs.html" class="btn btn-ghost">View Job Board</a>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

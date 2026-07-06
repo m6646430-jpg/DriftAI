@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Hunt Program — DriftAI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html">Job Board</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html" style="color:#a78bfa;font-weight:700;">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="jobs.html" class="btn btn-outline">Search Jobs Free</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="jobs.html">Job Board</a>
+    <a href="community.html">Community</a>
+    <a href="resume-services.html">Resume Services</a>
+    <a href="jobhunt.html">Job Hunt</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="section-label" style="justify-content:center;">Job Hunt Program</div>
+  <h1>Let Us <span class="gradient-text">Apply For You.</span></h1>
+  <p>A done-for-you AI application service. We tailor a resume and cover letter for every role and submit it on your behalf — you just show up to interviews.</p>
+  <div class="page-badges">
+    <span class="page-badge">✓ One-time payment</span>
+    <span class="page-badge">✓ No subscription</span>
+    <span class="page-badge">✓ Human-reviewed</span>
+  </div>
+</div>
+
+<div class="section" style="padding-top:48px;">
+  <div class="container">
+    <div class="jobhunt-stats-box reveal">
+      <div class="jh-stat"><div class="jh-stat-num">147</div><div class="jh-stat-label">Hiring managers tested with</div></div>
+      <div class="jh-stat"><div class="jh-stat-num">50+</div><div class="jh-stat-label">ATS platforms validated against</div></div>
+      <div class="jh-stat"><div class="jh-stat-num">~5 / 20</div><div class="jh-stat-label">Interviews per 20 applications</div></div>
+    </div>
+
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$199<span>.99</span></div>
+        <div class="plan-desc">One-time · 250 tailored applications</div>
+        <ul class="plan-features">
+          <li>250 tailored applications</li>
+          <li>Tailored resume + cover letter per role</li>
+          <li>"Let Us Apply" automated submission</li>
+          <li>Live job tracker</li>
+          <li class="dim">Weekly strategy call</li>
+        </ul>
+        <a href="#" class="btn btn-outline w-full payment-link" data-plan="jobhunt_starter">Start — $199.99 →</a>
+      </div>
+
+      <div class="pricing-card popular">
+        <div class="popular-badge">Best Value</div>
+        <div class="plan-name">Growth</div>
+        <div class="plan-price">$349<span>.99</span></div>
+        <div class="plan-desc">One-time · 500 tailored applications</div>
+        <ul class="plan-features">
+          <li>500 tailored applications</li>
+          <li>Tailored resume + cover letter per role</li>
+          <li>"Let Us Apply" automated submission</li>
+          <li>Live job tracker</li>
+          <li>1 strategy call (30 min)</li>
+        </ul>
+        <a href="#" class="btn btn-primary w-full payment-link" data-plan="jobhunt_growth">Start — $349.99 →</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Unlimited Hunt</div>
+        <div class="plan-price">$599<span>.99</span></div>
+        <div class="plan-desc">One-time · 1,000 tailored applications</div>
+        <ul class="plan-features">
+          <li>1,000 tailored applications</li>
+          <li>Tailored resume + cover letter per role</li>
+          <li>"Let Us Apply" automated submission</li>
+          <li>Live job tracker</li>
+          <li>3 strategy calls (30 min each)</li>
+        </ul>
+        <a href="#" class="btn btn-outline w-full payment-link" data-plan="jobhunt_unlimited">Start — $599.99 →</a>
+      </div>
+    </div>
+
+    <div class="onetime-box reveal">
+      <h3>Not sure which tier fits you?</h3>
+      <p>Most clients targeting a single role/industry start with Growth. Career-switchers or those applying broadly go Unlimited.</p>
+      <a href="index.html#contact" class="btn btn-ghost">Talk to us first →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">Drift<span>AI</span></a>
+      <p>Canada's AI-powered job application service. We apply, you interview, you get hired.</p>
+      <div class="social-links">
+        <a href="#">TikTok</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Explore</h4>
+        <a href="jobs.html">Job Board</a>
+        <a href="community.html">Community</a>
+        <a href="resume-services.html">Resume Services</a>
+        <a href="jobhunt.html">Job Hunt Program</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Pricing &amp; Billing</a>
+        <a href="#">Payments &amp; Security</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Terms &amp; Privacy</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="index.html#contact">Contact Us</a>
+        <a href="index.html#how">How It Works</a>
+        <a href="index.html#testimonials">Results</a>
+        <a href="mailto:support@driftai.com">support@driftai.com</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 DriftAI · All rights reserved · Canada</p>
+    <p>Disclaimer: We apply on your behalf with your written consent. We do not guarantee interviews or employment offers.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

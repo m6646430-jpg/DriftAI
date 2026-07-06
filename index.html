@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DriftAI — AI-Powered Job Application Service</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html">Job Board</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="jobs.html" class="btn btn-outline">Search Jobs Free</a>
+      <a href="jobhunt.html" class="btn btn-primary">Let Us Apply →</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="jobs.html">Job Board</a>
+    <a href="community.html">Community</a>
+    <a href="resume-services.html">Resume Services</a>
+    <a href="jobhunt.html">Job Hunt</a>
+    <a href="jobhunt.html" class="btn btn-primary" style="margin-top:8px;text-align:center;">Let Us Apply →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Floating job application cards -->
+  <div class="floating-cards" id="floatingCards"></div>
+
+  <div style="position:relative;z-index:2;width:100%;">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Live — 12 applications sent in last hour
+    </div>
+
+    <h1>
+      Find the Job. Tailor the Resume.<br />
+      <span class="hero-typewriter" id="typewriter">Apply In One Tap</span>
+    </h1>
+
+    <p class="hero-sub">A free job board crawling 50,000+ Canadian company career pages, AI resume tools, and a done-for-you AI application service — all in one place.</p>
+
+    <div class="hero-cta">
+      <a href="jobs.html" class="btn btn-primary btn-lg">🔍 Search Jobs Free</a>
+      <a href="jobhunt.html" class="btn btn-outline btn-lg">Let Us Apply For You →</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num gradient-text" data-target="2400">0</span>
+        <span class="stat-label">Jobs Applied</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num" style="background:linear-gradient(135deg,#34d399,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;" data-target="87" data-suffix="%">0%</span>
+        <span class="stat-label">Interview Rate</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num" style="background:linear-gradient(135deg,#fbbf24,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;" data-target="50000" data-suffix="+">0</span>
+        <span class="stat-label">Jobs Crawled Daily</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num" style="background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;" data-target="48" data-suffix=" hrs">0 hrs</span>
+        <span class="stat-label">Avg. First Interview</span>
+      </div>
+    </div>
+
+    <div class="hero-brands">
+      <span>Applied at:</span>
+      <strong>Amazon</strong><strong>RBC</strong><strong>Shopify</strong><strong>TD Bank</strong><strong>Google</strong><strong>Deloitte</strong><strong>Rogers</strong><strong>CIBC</strong>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll to explore</div>
+</section>
+
+<!-- CREDIBILITY STRIP -->
+<section class="credibility-strip">
+  <div class="container">
+    <div class="credibility-label">$8,000+ of primary R&D behind DriftAI</div>
+    <div class="credibility-grid reveal">
+      <div class="credibility-item">
+        <div class="credibility-num">50+</div>
+        <div class="credibility-sub">ATS platforms tested against</div>
+      </div>
+      <div class="credibility-item">
+        <div class="credibility-num">11,000+</div>
+        <div class="credibility-sub">resumes analyzed to find mistake patterns</div>
+      </div>
+      <div class="credibility-item">
+        <div class="credibility-num">115+</div>
+        <div class="credibility-sub">resume mistake patterns identified</div>
+      </div>
+      <div class="credibility-item">
+        <div class="credibility-num">~5/20</div>
+        <div class="credibility-sub">interviews per 20 tailored applications</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker"></div>
+</div>
+
+<!-- JOB BOARD PREVIEW -->
+<section class="section" id="jobboard" style="padding-bottom:60px;">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">Free Job Board</div>
+      <h2 class="section-title">Verified Jobs. <span class="gradient-text">Zero Ghost Listings.</span></h2>
+      <p class="section-sub">We crawl 50,000+ company career pages directly — no scraped duplicates, no expired postings, no scams.</p>
+    </div>
+    <div class="jobboard-list reveal" style="margin-top:40px;">
+      <div class="jobboard-card">
+        <div class="jb-logo">🏦</div>
+        <div>
+          <div class="jb-role">Business Analyst</div>
+          <div class="jb-company">RBC Royal Bank · Toronto, ON</div>
+          <div class="jb-meta">
+            <span class="jb-tag salary">$78,000 – $95,000</span>
+            <span class="jb-tag">Hybrid</span>
+            <span class="jb-tag sponsor">H-1B eligible</span>
+          </div>
+        </div>
+        <div class="jb-right"><div class="jb-posted">Posted 5 hrs ago</div><a href="jobs.html" class="jb-apply">View →</a></div>
+      </div>
+      <div class="jobboard-card">
+        <div class="jb-logo">🛍️</div>
+        <div>
+          <div class="jb-role">Software Engineer, Platform</div>
+          <div class="jb-company">Shopify · Ottawa, ON</div>
+          <div class="jb-meta">
+            <span class="jb-tag salary">$95,000 – $120,000</span>
+            <span class="jb-tag">Remote</span>
+            <span class="jb-tag sponsor">PGWP friendly</span>
+          </div>
+        </div>
+        <div class="jb-right"><div class="jb-posted">Posted 1 day ago</div><a href="jobs.html" class="jb-apply">View →</a></div>
+      </div>
+      <div class="jobboard-card">
+        <div class="jb-logo">📊</div>
+        <div>
+          <div class="jb-role">Data Analyst</div>
+          <div class="jb-company">TD Bank · Calgary, AB</div>
+          <div class="jb-meta">
+            <span class="jb-tag salary">$70,000 – $88,000</span>
+            <span class="jb-tag">Onsite</span>
+          </div>
+        </div>
+        <div class="jb-right"><div class="jb-posted">Posted 2 days ago</div><a href="jobs.html" class="jb-apply">View →</a></div>
+      </div>
+    </div>
+    <div class="jobboard-cta reveal" style="padding-bottom:0;">
+      <a href="jobs.html" class="btn btn-primary btn-lg">Browse Full Job Board — Free →</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">3 Steps to Your <span class="gradient-text">Dream Job</span></h2>
+      <p class="section-sub">The entire process is handled for you — no stress, no wasted weekends.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal" style="transition-delay:0.1s">
+        <div class="step-num">Step 01</div>
+        <span class="step-icon">📋</span>
+        <h3>Fill Onboarding Form</h3>
+        <p>Tell us your target role, location, experience level, and salary expectations. 5 minutes, once.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.2s">
+        <div class="step-num">Step 02</div>
+        <span class="step-icon">🤖</span>
+        <h3>AI Applies For You</h3>
+        <p>Our AI rewrites your resume for each role, writes unique cover letters, and submits 30–100 applications per month.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.3s">
+        <div class="step-num">Step 03</div>
+        <span class="step-icon">🎯</span>
+        <h3>You Attend Interviews</h3>
+        <p>Receive a weekly report of every application. Only task left: show up to HR calls and collect job offers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services" style="padding-top:0;">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">Services</div>
+      <h2 class="section-title">Everything You Need to <span class="gradient-text-2">Land the Job</span></h2>
+      <p class="section-sub">We handle every step of the application process end-to-end.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal" style="transition-delay:0.05s">
+        <span class="service-icon">📄</span>
+        <h3>ATS Resume Rewrite</h3>
+        <p>AI rewrites your resume with keywords that ATS systems and Canadian recruiters look for. Updated monthly.</p>
+        <span class="service-tag">All plans</span>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.1s">
+        <span class="service-icon">✉️</span>
+        <h3>Custom Cover Letters</h3>
+        <p>Every application gets a unique, tailored cover letter. Not a template — beats 95% of applicants automatically.</p>
+        <span class="service-tag">All plans</span>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.15s">
+        <span class="service-icon">🔗</span>
+        <h3>LinkedIn Optimization</h3>
+        <p>Headline, summary, and experience rewritten so recruiters find and message you first.</p>
+        <span class="service-tag">Pro &amp; VIP</span>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.2s">
+        <span class="service-icon">📊</span>
+        <h3>Job Tracker Dashboard</h3>
+        <p>Live spreadsheet showing every application: company, role, status, date. Full transparency always.</p>
+        <span class="service-tag">All plans</span>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.25s">
+        <span class="service-icon">📈</span>
+        <h3>Weekly Strategy Reports</h3>
+        <p>Every Monday: apps sent, callbacks received, which roles are converting, and what to adjust next week.</p>
+        <span class="service-tag">All plans</span>
+      </div>
+      <div class="service-card reveal" style="transition-delay:0.3s">
+        <span class="service-icon">🎯</span>
+        <h3>Targeted Job Search</h3>
+        <p>We search LinkedIn, Indeed, Glassdoor, Job Bank Canada, and company sites. Only roles matching your goals.</p>
+        <span class="service-tag">All plans</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUME SERVICES PROMO -->
+<section class="tools-promo section">
+  <div class="container tools-promo-inner">
+    <div class="reveal-left">
+      <div class="section-label">Resume Services</div>
+      <h2>Human-Written, <span class="gradient-text">ATS-Optimized</span> Resumes</h2>
+      <p>Not an AI template — a real resume writer on our team rewrites your resume and cover letter from scratch, tailored to your target role.</p>
+      <ul class="tools-list">
+        <li>Written by a human resume expert — not just AI output</li>
+        <li>ATS-optimized formatting that passes every major platform</li>
+        <li>Tailored cover letter included</li>
+        <li>48-hour turnaround</li>
+        <li>One round of revisions included</li>
+      </ul>
+      <a href="resume-services.html" class="btn btn-primary btn-lg">See Resume Packages →</a>
+    </div>
+    <div class="reveal-right">
+      <div class="tool-preview">
+        <div class="tool-preview-header">
+          <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          <span style="font-size:12px;color:rgba(255,255,255,0.4);margin-left:10px;">Resume Review</span>
+        </div>
+        <div class="tool-preview-body">
+          <div class="score-ring">
+            <svg viewBox="0 0 120 120" width="140" height="140">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="url(#scoreGrad)" stroke-width="10"
+                stroke-dasharray="314" stroke-dashoffset="34" stroke-linecap="round"
+                transform="rotate(-90 60 60)" id="hero-arc"/>
+              <defs>
+                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#4f8ef7"/>
+                  <stop offset="100%" stop-color="#a78bfa"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="score-label">
+              <div class="score-num" id="preview-score">89</div>
+              <div class="score-pct">/ 100</div>
+            </div>
+          </div>
+          <div class="tool-insights">
+            <div class="insight green">✓ Human-reviewed</div>
+            <div class="insight green">✓ ATS-formatted</div>
+            <div class="insight green">✓ Cover letter included</div>
+            <div class="insight yellow">⚡ 48-hr delivery</div>
+          </div>
+        </div>
+        <a href="resume-services.html" class="tool-preview-btn">Get My Resume Written →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Two Ways to <span class="gradient-text">Land the Job.</span></h2>
+      <p class="section-sub">Get hands-on tools for $9.99/month, or let us apply for you with a one-time Job Hunt package.</p>
+    </div>
+
+    <div class="pricing-grid reveal" style="grid-template-columns:1fr 1fr;max-width:760px;">
+      <div class="pricing-card">
+        <div class="plan-name">Community</div>
+        <div class="plan-price">$9.99<span>/ month</span></div>
+        <div class="plan-desc">Curated jobs, templates &amp; all resume tools — cancel anytime</div>
+        <ul class="plan-features">
+          <li>Visa-sponsorship job board filter</li>
+          <li>Private curated job table updated daily</li>
+          <li>$10K+ digital template &amp; guide library</li>
+          <li>Full access to all AI resume tools</li>
+        </ul>
+        <a href="community.html" class="btn btn-outline w-full">See Community →</a>
+      </div>
+      <div class="pricing-card popular">
+        <div class="popular-badge">Most Results</div>
+        <div class="plan-name">Job Hunt Program</div>
+        <div class="plan-price">$199<span>.99 one-time</span></div>
+        <div class="plan-desc">We apply for you — tailored resume + cover letter per role</div>
+        <ul class="plan-features">
+          <li>250–1,000 tailored applications</li>
+          <li>AI resume &amp; cover letter per role</li>
+          <li>"Let Us Apply" — fully automated submission</li>
+          <li>~5 interviews per 20 applications (tested)</li>
+        </ul>
+        <a href="jobhunt.html" class="btn btn-primary w-full">See Job Hunt Plans →</a>
+      </div>
+    </div>
+
+    <!-- Compare strip -->
+    <div class="compare-strip reveal">
+      <div class="cs-label">Why pay agency prices when AI does it for less?</div>
+      <div class="cs-row">
+        <div class="cs-item bad">❌ Traditional agency — $1,500–3,000/month</div>
+        <div class="cs-item bad">❌ DIY applying — 40+ hours wasted per month</div>
+        <div class="cs-item good">✅ DriftAI — from $9.99/month · AI-powered</div>
+      </div>
+    </div>
+
+    <div class="onetime-box reveal">
+      <h3>Just need a resume rewrite?</h3>
+      <p>One-time ATS optimization — keyword-rich, professionally rewritten by AI + human review. Delivered in 24 hrs.</p>
+      <a href="resume-services.html" class="btn btn-ghost">Get Resume Rewrite — $99 CAD →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" id="testimonials" style="padding-top:0;">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">Results</div>
+      <h2 class="section-title">Real People. <span class="gradient-text">Real Jobs.</span></h2>
+      <p class="section-sub">Over 200 clients placed across Canada in the last 12 months.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal" style="transition-delay:0.1s">
+        <div class="stars">★★★★★</div>
+        <p>"Applied for 3 months alone with zero results. DriftAI got me 4 interviews in 2 weeks. Got hired at TD Bank — couldn't believe it."</p>
+        <div class="testimonial-author">
+          <div class="avatar">RS</div>
+          <div><strong>Rahul S.</strong><span>Software Engineer · Toronto</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal" style="transition-delay:0.2s">
+        <div class="stars">★★★★★</div>
+        <p>"As an international student I had no idea how Canadian resumes work. They rewrote everything and I landed a co-op at Shopify in 3 weeks."</p>
+        <div class="testimonial-author">
+          <div class="avatar">PM</div>
+          <div><strong>Priya M.</strong><span>Business Analyst · Vancouver</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal" style="transition-delay:0.3s">
+        <div class="stars">★★★★★</div>
+        <p>"I work full time and had zero time to apply. This service applied to 60 jobs while I slept. 7 callbacks in month one. Worth every dollar."</p>
+        <div class="testimonial-author">
+          <div class="avatar">AK</div>
+          <div><strong>Amir K.</strong><span>Data Analyst · Calgary</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section cta-section" id="contact">
+  <div class="container cta-inner">
+    <div class="reveal">
+      <h2>Ready to Land Your <span class="gradient-text">Dream Job?</span></h2>
+      <p>Fill the form below — we'll reach out within 24 hours to get you started.</p>
+      <form class="contact-form" onsubmit="submitForm(event)">
+        <div class="form-row">
+          <input type="text" placeholder="Your Full Name" required />
+          <input type="email" placeholder="Your Email Address" required />
+        </div>
+        <div class="form-row">
+          <input type="tel" placeholder="Phone / WhatsApp Number" />
+          <select required>
+            <option value="">Select a Plan</option>
+            <option>Community — $9.99/month</option>
+            <option>Job Hunt Starter — $199.99</option>
+            <option>Job Hunt Growth — $349.99</option>
+            <option>Job Hunt Unlimited — $599.99</option>
+            <option>One-time Resume — $99</option>
+          </select>
+        </div>
+        <input type="text" placeholder="Target Job Title (e.g. Software Engineer, Data Analyst)" required />
+        <textarea placeholder="Tell us about your background and the types of roles you're targeting..." rows="4"></textarea>
+        <button type="submit" class="btn btn-primary btn-lg w-full">Submit — Get Started Today 🚀</button>
+      </form>
+      <div id="formSuccess" class="form-success" style="display:none;">
+        ✅ Thank you! We'll reach out within 24 hours. Check your email inbox.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">Drift<span>AI</span></a>
+      <p>Canada's AI-powered job application service. We apply, you interview, you get hired.</p>
+      <div class="social-links">
+        <a href="#">TikTok</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Explore</h4>
+        <a href="jobs.html">Job Board</a>
+        <a href="community.html">Community</a>
+        <a href="resume-services.html">Resume Services</a>
+        <a href="jobhunt.html">Job Hunt Program</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Pricing &amp; Billing</a>
+        <a href="#">Payments &amp; Security</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Terms &amp; Privacy</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="#contact">Contact Us</a>
+        <a href="#how">How It Works</a>
+        <a href="#testimonials">Results</a>
+        <a href="mailto:support@driftai.com">support@driftai.com</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 DriftAI · All rights reserved · Canada</p>
+    <p>Disclaimer: We apply on your behalf with your written consent. We do not guarantee interviews or employment offers.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

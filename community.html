@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Membership — DriftAI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html">Job Board</a></li>
+      <li><a href="community.html" style="color:#a78bfa;font-weight:700;">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="jobhunt.html" class="btn btn-primary">Let Us Apply →</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="jobs.html">Job Board</a>
+    <a href="community.html">Community</a>
+    <a href="resume-services.html">Resume Services</a>
+    <a href="jobhunt.html">Job Hunt</a>
+    <a href="jobhunt.html" class="btn btn-primary" style="margin-top:8px;text-align:center;">Let Us Apply →</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="section-label" style="justify-content:center;">Community Membership</div>
+  <h1>Your Job Hunt <span class="gradient-text">Headquarters.</span></h1>
+  <p>One low monthly fee for curated jobs, a $10K+ template library, and a private daily strategy feed.</p>
+  <div class="page-badges">
+    <span class="page-badge">✓ No contract</span>
+    <span class="page-badge">✓ Cancel anytime</span>
+    <span class="page-badge">✓ Instant access</span>
+  </div>
+</div>
+
+<div class="community-layout">
+  <div>
+    <div class="community-feature reveal">
+      <div class="cf-icon">🎯</div>
+      <div>
+        <div class="cf-title">Visa-Sponsorship Job Filter</div>
+        <div class="cf-desc">Filter the entire job board by companies that have sponsored H-1B, PGWP, LMIA, or Green Card candidates before — stop wasting time on roles that won't sponsor you.</div>
+      </div>
+    </div>
+    <div class="community-feature reveal">
+      <div class="cf-icon">🗂️</div>
+      <div>
+        <div class="cf-title">Private Curated Job Table</div>
+        <div class="cf-desc">A hand-picked, daily-updated table of the best new roles in your target field — refreshed every morning, no noise.</div>
+      </div>
+    </div>
+    <div class="community-feature reveal">
+      <div class="cf-icon">📰</div>
+      <div>
+        <div class="cf-title">Daily Strategy Feed</div>
+        <div class="cf-desc">Short daily posts on job market trends, what's working for other members right now, and tactical advice for interviews and outreach.</div>
+      </div>
+    </div>
+    <div class="community-feature reveal">
+      <div class="cf-icon">📚</div>
+      <div>
+        <div class="cf-title">$10K+ Digital Template Library</div>
+        <div class="cf-desc">23+ ATS-cleared resume templates, cover letter frameworks, salary negotiation scripts, and interview prep workbooks — all included.</div>
+      </div>
+    </div>
+    <div class="community-feature reveal">
+      <div class="cf-icon">💸</div>
+      <div>
+        <div class="cf-title">10% Off Resume Services</div>
+        <div class="cf-desc">Members get a discount on every human-written resume and cover letter package.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="community-price-card">
+    <div class="pricing-card popular">
+      <div class="popular-badge">Most Popular</div>
+      <div class="plan-name">Community</div>
+      <div class="plan-price" id="community-price">$9<span>.99 / month</span></div>
+      <div class="plan-desc">Billed monthly · cancel anytime</div>
+      <ul class="plan-features">
+        <li>Visa-sponsorship job filter</li>
+        <li>Private curated job table</li>
+        <li>Daily strategy feed</li>
+        <li>$10K+ template library</li>
+        <li>10% off resume services</li>
+      </ul>
+      <a href="#" class="btn btn-primary w-full payment-link" data-plan="community">Join Community →</a>
+      <div class="toggle-row">
+        <span>Switch to annual (save 17%)</span>
+        <div class="toggle-switch" id="annualToggle" onclick="toggleAnnual()"></div>
+      </div>
+    </div>
+    <div class="trust-row">
+      <span>🔒 Secure via Stripe</span>
+      <span>✓ Cancel anytime</span>
+      <span>⚡ Instant access</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">Drift<span>AI</span></a>
+      <p>Canada's AI-powered job application service. We apply, you interview, you get hired.</p>
+      <div class="social-links">
+        <a href="#">TikTok</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Explore</h4>
+        <a href="jobs.html">Job Board</a>
+        <a href="community.html">Community</a>
+        <a href="resume-services.html">Resume Services</a>
+        <a href="jobhunt.html">Job Hunt Program</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Pricing &amp; Billing</a>
+        <a href="#">Payments &amp; Security</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Terms &amp; Privacy</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="index.html#contact">Contact Us</a>
+        <a href="index.html#how">How It Works</a>
+        <a href="index.html#testimonials">Results</a>
+        <a href="mailto:support@driftai.com">support@driftai.com</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 DriftAI · All rights reserved · Canada</p>
+    <p>Disclaimer: We apply on your behalf with your written consent. We do not guarantee interviews or employment offers.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+let isAnnual = false;
+function toggleAnnual() {
+  isAnnual = !isAnnual;
+  document.getElementById('annualToggle').classList.toggle('on', isAnnual);
+  document.getElementById('community-price').innerHTML = isAnnual
+    ? '$99<span>.99 / year</span>'
+    : '$9<span>.99 / month</span>';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.driftai.jobs</string>
+
+  <!-- Run node against the fetch script -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/maheshkunasani/.nvm/versions/node/v24.16.0/bin/node</string>
+    <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site/scripts/fetch-jobs.js</string>
+  </array>
+
+  <!-- Your free Adzuna keys go here -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>ADZUNA_APP_ID</key>
+    <string>PASTE_YOUR_APP_ID</string>
+    <key>ADZUNA_APP_KEY</key>
+    <string>PASTE_YOUR_APP_KEY</string>
+    <!-- Optional: same key as stock-digest. Enables AI curation + blurbs. -->
+    <key>OPENROUTER_API_KEY</key>
+    <string>PASTE_YOUR_OPENROUTER_KEY</string>
+  </dict>
+
+  <!-- Run every day at 6:00 AM -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>6</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/driftai-jobs.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/driftai-jobs.err</string>
+</dict>
+</plist>

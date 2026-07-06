@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Job Board — DriftAI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html" style="color:#a78bfa;font-weight:700;">Job Board</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="jobhunt.html" class="btn btn-primary">Let Us Apply →</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="jobs.html">Job Board</a>
+    <a href="community.html">Community</a>
+    <a href="resume-services.html">Resume Services</a>
+    <a href="jobhunt.html">Job Hunt</a>
+    <a href="jobhunt.html" class="btn btn-primary" style="margin-top:8px;text-align:center;">Let Us Apply →</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="section-label" style="justify-content:center;">Free Job Board</div>
+  <h1>Verified Roles. <span class="gradient-text">Zero Ghost Jobs.</span></h1>
+  <p>We crawl 50,000+ Canadian company career pages directly — Workday, Greenhouse, Lever, Ashby and more. No account needed, no scams, no expired postings.</p>
+  <div class="page-badges">
+    <span class="page-badge">✓ No account needed</span>
+    <span class="page-badge">✓ 6 markets across Canada</span>
+    <span class="page-badge">✓ Last 3 days only</span>
+  </div>
+</div>
+
+<div class="jobboard-filters">
+  <button class="jobboard-filter active" data-country="all">🌐 All Countries</button>
+  <button class="jobboard-filter" data-country="US">🇺🇸 USA</button>
+  <button class="jobboard-filter" data-country="CA">🇨🇦 Canada</button>
+</div>
+<div class="jobboard-filters" style="border-bottom:none;padding-top:14px;">
+  <button class="jobboard-filter active" data-cat="all">All Roles</button>
+  <button class="jobboard-filter" data-cat="Tech">Tech</button>
+  <button class="jobboard-filter" data-cat="Finance">Finance</button>
+  <button class="jobboard-filter" data-cat="Data">Data</button>
+  <button class="jobboard-filter" data-cat="Marketing">Marketing</button>
+  <button class="jobboard-filter" data-cat="sponsor">Visa-Sponsor Only</button>
+</div>
+<div id="jobsMeta" style="text-align:center;font-size:13px;font-weight:600;color:rgba(255,255,255,0.45);margin-top:20px;">Loading live roles…</div>
+
+<div class="jobboard-list" id="jobboardList"></div>
+
+<div class="jobboard-cta">
+  <h3 style="font-size:24px;font-weight:800;margin-bottom:10px;">Want the unlimited, curated version of this board?</h3>
+  <p style="color:rgba(255,255,255,0.5);margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto;">Community members get a private daily-updated job table filtered by visa sponsorship, plus templates and resume tools.</p>
+  <a href="community.html" class="btn btn-primary btn-lg">Join Community — $9.99/month →</a>
+  <p style="color:rgba(255,255,255,0.3);margin-top:16px;font-size:13px;">Or skip the searching — <a href="jobhunt.html" style="color:#60a5fa;font-weight:700;">let us apply for you →</a></p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">Drift<span>AI</span></a>
+      <p>Canada's AI-powered job application service. We apply, you interview, you get hired.</p>
+      <div class="social-links">
+        <a href="#">TikTok</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Explore</h4>
+        <a href="jobs.html">Job Board</a>
+        <a href="community.html">Community</a>
+        <a href="resume-services.html">Resume Services</a>
+        <a href="jobhunt.html">Job Hunt Program</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Pricing &amp; Billing</a>
+        <a href="#">Payments &amp; Security</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Terms &amp; Privacy</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="index.html#contact">Contact Us</a>
+        <a href="index.html#how">How It Works</a>
+        <a href="index.html#testimonials">Results</a>
+        <a href="mailto:support@driftai.com">support@driftai.com</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 DriftAI · All rights reserved · Canada</p>
+    <p>Disclaimer: We apply on your behalf with your written consent. We do not guarantee interviews or employment offers.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/jobs.js"></script>
+</body>
+</html>
