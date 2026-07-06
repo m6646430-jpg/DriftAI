@@ -28,6 +28,10 @@
     <!-- Optional: same key as stock-digest. Enables AI curation + blurbs. -->
     <key>OPENROUTER_API_KEY</key>
     <string>PASTE_YOUR_OPENROUTER_KEY</string>
+    <!-- Gemini (free, Google Search grounding). Same key as stock-digest.
+         When set, the daily run uses Gemini to find real US/CA jobs. -->
+    <key>GEMINI_API_KEY</key>
+    <string>PASTE_YOUR_GEMINI_KEY</string>
   </dict>
 
   <!-- Run every day at 6:00 AM -->

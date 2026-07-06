@@ -21,7 +21,13 @@ DEPLOY_BRANCH="${DRIFTAI_DEPLOY_BRANCH:-main}"
 echo "▶ DriftAI daily update — $(date '+%Y-%m-%d %H:%M')"
 
 # 1. Fetch fresh jobs (safe: leaves jobs.json untouched if keys/API fail).
-node scripts/fetch-jobs.js
+#    Prefer Gemini (free, Google Search grounding) when GEMINI_API_KEY is set;
+#    otherwise fall back to the Adzuna fetcher.
+if [ -n "${GEMINI_API_KEY:-}" ] || [ -n "${GOOGLE_API_KEY:-}" ]; then
+  node scripts/fetch-jobs-gemini.js
+else
+  node scripts/fetch-jobs.js
+fi
 
 # 2. Only commit + push if the job data actually changed.
 if git diff --quiet -- data/jobs.json; then

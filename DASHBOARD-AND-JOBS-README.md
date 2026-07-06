@@ -22,7 +22,26 @@ It shows:
 
 ---
 
-## 2. Daily Job Board (Canada + USA)
+## Job source options
+
+Two ways to fill the board with real jobs — pick one:
+
+- **Gemini (default, free, no new signup)** — uses your existing `GEMINI_API_KEY` (same as stock-digest) with Google Search grounding to find real US/CA jobs. Links go to each company's **official careers page** (never a hallucinated posting URL). Script: `scripts/fetch-jobs-gemini.js`.
+- **Adzuna (precise apply links)** — free API (250 calls/mo), exact job-posting links + salary. Needs a 2-min signup. Script: `scripts/fetch-jobs.js`.
+
+`scripts/daily-update.sh` automatically uses **Gemini when `GEMINI_API_KEY` is set**, otherwise Adzuna.
+
+### Run the Gemini fetcher (recommended)
+```bash
+cd /Users/maheshkunasani/IdeaProjects/resume-marketing-site
+export GEMINI_API_KEY=your_key      # same key stock-digest uses
+node scripts/fetch-jobs-gemini.js   # writes data/jobs.json
+```
+Then commit + push `data/jobs.json` (or run `bash scripts/daily-update.sh` which does it).
+
+---
+
+## 2. Daily Job Board (Canada + USA) — Adzuna path
 
 The board on **`jobs.html`** now loads from **`data/jobs.json`** and filters by country (USA / Canada) and category. It ships with sample jobs so it works immediately.
 
