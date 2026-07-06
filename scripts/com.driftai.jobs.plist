@@ -16,30 +16,32 @@
   <key>WorkingDirectory</key>
   <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site</string>
 
-  <!-- Your free Adzuna keys go here -->
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
     <string>/Users/maheshkunasani/.nvm/versions/node/v24.16.0/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <!-- REQUIRED for the Gemini job fetcher. Paste your (rotated) Gemini key. -->
+    <key>GEMINI_API_KEY</key>
+    <string>PASTE_YOUR_GEMINI_KEY</string>
+    <!-- Optional Adzuna fallback (only used if GEMINI_API_KEY is empty). -->
     <key>ADZUNA_APP_ID</key>
     <string>PASTE_YOUR_APP_ID</string>
     <key>ADZUNA_APP_KEY</key>
     <string>PASTE_YOUR_APP_KEY</string>
-    <!-- Optional: same key as stock-digest. Enables AI curation + blurbs. -->
-    <key>OPENROUTER_API_KEY</key>
-    <string>PASTE_YOUR_OPENROUTER_KEY</string>
-    <!-- Gemini (free, Google Search grounding). Same key as stock-digest.
-         When set, the daily run uses Gemini to find real US/CA jobs. -->
-    <key>GEMINI_API_KEY</key>
-    <string>PASTE_YOUR_GEMINI_KEY</string>
   </dict>
 
-  <!-- Run every day at 6:00 AM -->
+  <!-- Run twice every day: 6:00 AM and 6:00 PM -->
   <key>StartCalendarInterval</key>
-  <dict>
-    <key>Hour</key><integer>6</integer>
-    <key>Minute</key><integer>0</integer>
-  </dict>
+  <array>
+    <dict>
+      <key>Hour</key><integer>6</integer>
+      <key>Minute</key><integer>0</integer>
+    </dict>
+    <dict>
+      <key>Hour</key><integer>18</integer>
+      <key>Minute</key><integer>0</integer>
+    </dict>
+  </array>
 
   <key>StandardOutPath</key>
   <string>/tmp/driftai-jobs.log</string>
