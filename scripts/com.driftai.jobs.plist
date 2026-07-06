@@ -5,16 +5,22 @@
   <key>Label</key>
   <string>com.driftai.jobs</string>
 
-  <!-- Run node against the fetch script -->
+  <!-- Fetch jobs, then commit+push if changed (triggers Netlify redeploy) -->
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/maheshkunasani/.nvm/versions/node/v24.16.0/bin/node</string>
-    <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site/scripts/fetch-jobs.js</string>
+    <string>/bin/bash</string>
+    <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site/scripts/daily-update.sh</string>
   </array>
+
+  <!-- Ensure node + git are on PATH when launchd runs this -->
+  <key>WorkingDirectory</key>
+  <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site</string>
 
   <!-- Your free Adzuna keys go here -->
   <key>EnvironmentVariables</key>
   <dict>
+    <key>PATH</key>
+    <string>/Users/maheshkunasani/.nvm/versions/node/v24.16.0/bin:/usr/local/bin:/usr/bin:/bin</string>
     <key>ADZUNA_APP_ID</key>
     <string>PASTE_YOUR_APP_ID</string>
     <key>ADZUNA_APP_KEY</key>

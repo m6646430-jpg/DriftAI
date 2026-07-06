@@ -68,8 +68,21 @@ Or add it to the launchd plist (`OPENROUTER_API_KEY` slot is already there). **S
 
 ---
 
-## When the site is live (Netlify)
+## When the site is live (Netlify) — auto-deploy is now wired
 
-The daily script updates the **local** `data/jobs.json`. For the live site to show new jobs, the file has to reach Netlify. Two options:
-- **Simple:** re-drag the folder to Netlify after the daily run (manual).
-- **Automatic:** put the site in a Git repo connected to Netlify, and have the daily script `git commit && git push` the updated `data/jobs.json`. Netlify auto-deploys. (Ask me to set this up when you've picked Git/Netlify.)
+The repo is on GitHub, so the live site can update itself daily. Flow:
+
+1. Connect the GitHub repo (`m6646430-jpg/DriftAI`) in Netlify → **Add new site → Import from Git**. `netlify.toml` already sets the publish settings.
+2. The daily job runs **`scripts/daily-update.sh`**, which:
+   - fetches fresh CA/USA jobs,
+   - commits `data/jobs.json` **only if it changed**,
+   - pushes to the deploy branch → **Netlify auto-redeploys**.
+
+Run it manually any time:
+```bash
+bash scripts/daily-update.sh
+```
+
+The launchd plist (`com.driftai.jobs.plist`) now runs this wrapper at 6 AM daily, so once your keys are in it and it's loaded, the live site refreshes its own job board every morning — no manual steps.
+
+> By default the script pushes to `main`. While testing on the `july-2026` branch, run it with `DRIFTAI_DEPLOY_BRANCH=july-2026 bash scripts/daily-update.sh`.

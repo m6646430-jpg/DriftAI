@@ -1,0 +1,24 @@
+# DriftAI — Netlify deployment config
+# Connect this repo in Netlify → every push to the deploy branch auto-publishes.
+
+[build]
+  publish = "."      # static site, no build step
+  command = ""
+
+# Keep the private admin dashboard out of search engines.
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# Job/dashboard data: let browsers cache briefly so the daily refresh shows fast.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# Send the deprecated single-plan URL to the current pricing, if anyone has it.
+[[redirects]]
+  from = "/pricing"
+  to = "/#pricing"
+  status = 301
