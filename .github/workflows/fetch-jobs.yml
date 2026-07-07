@@ -1,0 +1,41 @@
+name: Fetch jobs (twice daily)
+
+# Runs entirely on GitHub's servers — your Mac is not involved.
+on:
+  schedule:
+    - cron: '0 11 * * *'   # 11:00 UTC  (~6:00 AM ET / 4:30 PM IST)
+    - cron: '0 23 * * *'   # 23:00 UTC  (~6:00 PM ET / 4:30 AM IST)
+  workflow_dispatch: {}      # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write            # allow the job to commit data/jobs.json back
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch fresh US/CA jobs (Gemini)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/fetch-jobs-gemini.js
+
+      - name: Commit & push if jobs changed
+        run: |
+          if git diff --quiet -- data/jobs.json; then
+            echo "No job changes — nothing to deploy."
+          else
+            git config user.name "driftai-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add data/jobs.json
+            git commit -m "chore: scheduled job refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "Pushed job update — Netlify will redeploy."
+          fi

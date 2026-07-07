@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>com.driftai.jobs</string>
+  <string>com.mahesh.driftai-jobs</string>
 
   <!-- Fetch jobs, then commit+push if changed (triggers Netlify redeploy) -->
   <key>ProgramArguments</key>
@@ -37,9 +37,10 @@
     </dict>
   </array>
 
+  <!-- Log into the project dir, same as stock-digest (launchd.log is gitignored) -->
   <key>StandardOutPath</key>
-  <string>/tmp/driftai-jobs.log</string>
+  <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site/launchd.log</string>
   <key>StandardErrorPath</key>
-  <string>/tmp/driftai-jobs.err</string>
+  <string>/Users/maheshkunasani/IdeaProjects/resume-marketing-site/launchd.log</string>
 </dict>
 </plist>
