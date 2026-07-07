@@ -853,3 +853,18 @@ body::after {
 .score-again:hover { color: #fff; }
 .score-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 12px; padding: 16px; font-size: 13px; color: #f87171; text-align: center; }
 @media (max-width: 560px) { .score-tool { padding: 22px; } .score-cta-btns .btn { width: 100%; } }
+
+/* ===== SCORE SECTION ANIMATED BACKGROUND ===== */
+.score-section { position: relative; overflow: hidden; padding-top: 80px; padding-bottom: 80px; }
+.score-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.score-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; }
+.score-orb-1 { width: 460px; height: 460px; background: radial-gradient(circle, rgba(124,58,237,0.55), transparent 70%); top: -120px; left: -80px; animation: score-float-1 16s ease-in-out infinite; }
+.score-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(79,142,247,0.5), transparent 70%); bottom: -140px; right: -60px; animation: score-float-2 20s ease-in-out infinite; }
+.score-orb-3 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(244,114,182,0.35), transparent 70%); top: 40%; left: 55%; animation: score-float-3 24s ease-in-out infinite; }
+@keyframes score-float-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,40px) scale(1.15); } }
+@keyframes score-float-2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-50px,-40px) scale(1.1); } }
+@keyframes score-float-3 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-40px,30px) scale(1.2); } 66% { transform: translate(30px,-20px) scale(0.9); } }
+.score-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 40%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 40%, transparent 75%); animation: score-grid-drift 30s linear infinite; }
+@keyframes score-grid-drift { from { background-position: 0 0; } to { background-position: 48px 48px; } }
+.score-section .score-tool { position: relative; z-index: 2; box-shadow: 0 24px 80px rgba(0,0,0,0.4); }
+@media (prefers-reduced-motion: reduce) { .score-orb, .score-grid { animation: none; } }

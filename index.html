@@ -35,6 +35,78 @@
   </div>
 </nav>
 
+<!-- FREE AI RESUME SCORE -->
+<section class="section score-section" id="resume-score">
+  <!-- Animated background -->
+  <div class="score-bg" aria-hidden="true">
+    <div class="score-orb score-orb-1"></div>
+    <div class="score-orb score-orb-2"></div>
+    <div class="score-orb score-orb-3"></div>
+    <div class="score-grid"></div>
+  </div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">100% Free · No Signup</div>
+      <h2 class="section-title">Score Your Resume with <span class="gradient-text">AI</span> — Free.</h2>
+      <p class="section-sub">Upload your resume and our AI grades it out of 100 in seconds — ATS-readiness, impact, keywords and formatting. No account, no payment.</p>
+    </div>
+
+    <div class="score-tool reveal" id="scoreTool">
+      <!-- Upload state -->
+      <div id="scoreUpload" class="score-upload">
+        <div class="score-drop" id="scoreDrop">
+          <div class="score-drop-icon">📄</div>
+          <div class="score-drop-title">Drop your resume here, or click to upload</div>
+          <div class="score-drop-sub">PDF only · max 5 MB · your file is never stored</div>
+          <input type="file" id="resumeFile" accept="application/pdf" hidden />
+        </div>
+        <div id="scoreFileName" class="score-filename" style="display:none;"></div>
+        <button class="btn btn-primary btn-lg w-full" id="scoreBtn" disabled>Score My Resume — Free →</button>
+        <div class="score-privacy">🔒 Processed by AI to generate your score, then discarded. We never store your resume.</div>
+      </div>
+
+      <!-- Loading state -->
+      <div id="scoreLoading" class="score-loading" style="display:none;">
+        <div class="score-spinner"></div>
+        <div class="score-loading-text">Reading your resume… scoring against 2026 ATS standards…</div>
+      </div>
+
+      <!-- Result state -->
+      <div id="scoreResult" class="score-result" style="display:none;">
+        <div class="score-ring-wrap">
+          <svg viewBox="0 0 120 120" class="score-ring">
+            <defs>
+              <linearGradient id="scoreRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#a78bfa"/>
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="52" class="score-ring-bg"/>
+            <circle cx="60" cy="60" r="52" class="score-ring-fg" id="scoreRingFg" transform="rotate(-90 60 60)"/>
+          </svg>
+          <div class="score-ring-num"><span id="scoreValue">0</span><small>/100</small></div>
+        </div>
+        <div class="score-verdict" id="scoreVerdict"></div>
+        <div class="score-breakdown" id="scoreBreakdown"></div>
+        <div class="score-tips" id="scoreTips"></div>
+
+        <div class="score-cta">
+          <div class="score-cta-title">Want us to fix it and get you to 90+?</div>
+          <p class="score-cta-sub">Our team rewrites your resume by hand, ATS-optimized, in 48 hours. Talk to us free:</p>
+          <div class="score-cta-btns">
+            <a href="#" id="scoreWhatsApp" class="btn btn-green btn-lg" target="_blank" rel="noopener">💬 WhatsApp Us</a>
+            <a href="resume-services.html" class="btn btn-outline btn-lg">See Resume Packages →</a>
+          </div>
+        </div>
+        <button class="score-again" id="scoreAgain">← Score another resume</button>
+      </div>
+
+      <div id="scoreError" class="score-error" style="display:none;"></div>
+    </div>
+  </div>
+</section>
+
+
 <!-- HERO -->
 <section class="hero">
   <!-- Background orbs -->
@@ -123,70 +195,6 @@
 <div class="ticker-wrap">
   <div class="ticker" id="ticker"></div>
 </div>
-
-<!-- FREE AI RESUME SCORE -->
-<section class="section" id="resume-score" style="padding-top:70px;padding-bottom:70px;">
-  <div class="container">
-    <div class="reveal" style="text-align:center;">
-      <div class="section-label" style="justify-content:center;">100% Free · No Signup</div>
-      <h2 class="section-title">Score Your Resume with <span class="gradient-text">AI</span> — Free.</h2>
-      <p class="section-sub">Upload your resume and our AI grades it out of 100 in seconds — ATS-readiness, impact, keywords and formatting. No account, no payment.</p>
-    </div>
-
-    <div class="score-tool reveal" id="scoreTool">
-      <!-- Upload state -->
-      <div id="scoreUpload" class="score-upload">
-        <div class="score-drop" id="scoreDrop">
-          <div class="score-drop-icon">📄</div>
-          <div class="score-drop-title">Drop your resume here, or click to upload</div>
-          <div class="score-drop-sub">PDF only · max 5 MB · your file is never stored</div>
-          <input type="file" id="resumeFile" accept="application/pdf" hidden />
-        </div>
-        <div id="scoreFileName" class="score-filename" style="display:none;"></div>
-        <button class="btn btn-primary btn-lg w-full" id="scoreBtn" disabled>Score My Resume — Free →</button>
-        <div class="score-privacy">🔒 Processed by AI to generate your score, then discarded. We never store your resume.</div>
-      </div>
-
-      <!-- Loading state -->
-      <div id="scoreLoading" class="score-loading" style="display:none;">
-        <div class="score-spinner"></div>
-        <div class="score-loading-text">Reading your resume… scoring against 2026 ATS standards…</div>
-      </div>
-
-      <!-- Result state -->
-      <div id="scoreResult" class="score-result" style="display:none;">
-        <div class="score-ring-wrap">
-          <svg viewBox="0 0 120 120" class="score-ring">
-            <defs>
-              <linearGradient id="scoreRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#60a5fa"/>
-                <stop offset="100%" stop-color="#a78bfa"/>
-              </linearGradient>
-            </defs>
-            <circle cx="60" cy="60" r="52" class="score-ring-bg"/>
-            <circle cx="60" cy="60" r="52" class="score-ring-fg" id="scoreRingFg" transform="rotate(-90 60 60)"/>
-          </svg>
-          <div class="score-ring-num"><span id="scoreValue">0</span><small>/100</small></div>
-        </div>
-        <div class="score-verdict" id="scoreVerdict"></div>
-        <div class="score-breakdown" id="scoreBreakdown"></div>
-        <div class="score-tips" id="scoreTips"></div>
-
-        <div class="score-cta">
-          <div class="score-cta-title">Want us to fix it and get you to 90+?</div>
-          <p class="score-cta-sub">Our team rewrites your resume by hand, ATS-optimized, in 48 hours. Talk to us free:</p>
-          <div class="score-cta-btns">
-            <a href="#" id="scoreWhatsApp" class="btn btn-green btn-lg" target="_blank" rel="noopener">💬 WhatsApp Us</a>
-            <a href="resume-services.html" class="btn btn-outline btn-lg">See Resume Packages →</a>
-          </div>
-        </div>
-        <button class="score-again" id="scoreAgain">← Score another resume</button>
-      </div>
-
-      <div id="scoreError" class="score-error" style="display:none;"></div>
-    </div>
-  </div>
-</section>
 
 <!-- JOB BOARD PREVIEW -->
 <section class="section" id="jobboard" style="padding-bottom:60px;">
