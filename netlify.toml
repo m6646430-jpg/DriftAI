@@ -12,6 +12,10 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Netlify Scheduled Function lives here — it triggers the twice-daily rebuild.
+[functions]
+  directory = "netlify/functions"
+
 # Keep the private admin dashboard out of search engines.
 [[headers]]
   for = "/admin.html"
