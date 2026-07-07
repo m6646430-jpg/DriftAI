@@ -6,8 +6,9 @@
 // Requires one env var: BUILD_HOOK_URL (a Netlify build hook you create once).
 
 export const config = {
-  // Times are UTC. 06:00 and 18:00 UTC, every day.
-  schedule: "0 6,18 * * *",
+  // Netlify cron is UTC. 14:00 & 18:00 UTC = 9 AM & 1 PM EST.
+  // (During EDT/summer this lands at 10 AM & 2 PM — cron doesn't shift for DST.)
+  schedule: "0 14,18 * * *",
 };
 
 export default async () => {
