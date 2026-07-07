@@ -2,8 +2,15 @@
 # Connect this repo in Netlify → every push to the deploy branch auto-publishes.
 
 [build]
-  publish = "."      # static site, no build step
-  command = ""
+  publish = "."
+  # Fetch fresh US/CA jobs at build time (runs on Netlify's servers, not your Mac).
+  # cron-job.org pings a Netlify Build Hook twice daily to trigger this.
+  # Needs GEMINI_API_KEY set in Netlify env vars. If the key/API is unavailable,
+  # the script keeps the committed data/jobs.json so the build never fails.
+  command = "node scripts/fetch-jobs-gemini.js"
+
+[build.environment]
+  NODE_VERSION = "20"
 
 # Keep the private admin dashboard out of search engines.
 [[headers]]
