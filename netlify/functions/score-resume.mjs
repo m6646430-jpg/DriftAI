@@ -51,10 +51,11 @@ export default async (req) => {
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`;
+    // Key goes in a header, not the URL — URLs can end up in request logs.
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({
         contents: [{
           parts: [

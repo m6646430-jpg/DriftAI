@@ -52,13 +52,14 @@ Return ONLY a JSON array (no markdown, no prose). Each object must have exactly 
 Only include real companies and roles you actually found via Search. Do not fabricate.`;
 
 function endpoint(model) {
-  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${KEY}`;
+  // Key is sent as a header (not in the URL) so it can't leak into logs.
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 }
 
 async function callGemini(model) {
   const res = await fetch(endpoint(model), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': KEY },
     body: JSON.stringify({
       contents: [{ parts: [{ text: PROMPT }] }],
       tools: [{ google_search: {} }],
