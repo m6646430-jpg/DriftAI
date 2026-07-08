@@ -8,6 +8,7 @@ let ALL_JOBS = [];
 let activeCountry = 'all';
 let activeCat = 'all';
 let activeSort = 'recent';
+let activeSearch = '';
 
 function renderComingSoon() {
   const list = document.getElementById('jobboardList');
@@ -48,12 +49,17 @@ async function loadJobs() {
 function render() {
   const list = document.getElementById('jobboardList');
   if (!list) return;
+  const q = activeSearch.trim().toLowerCase();
   const jobs = ALL_JOBS.filter(j => {
     const countryOk = activeCountry === 'all' || j.country === activeCountry;
     let catOk = true;
     if (activeCat === 'sponsor') catOk = !!j.sponsor;
     else if (activeCat !== 'all') catOk = j.category === activeCat;
-    return countryOk && catOk;
+    const searchOk = !q ||
+      (j.role && j.role.toLowerCase().includes(q)) ||
+      (j.company && j.company.toLowerCase().includes(q)) ||
+      (j.location && j.location.toLowerCase().includes(q));
+    return countryOk && catOk && searchOk;
   });
 
   // Sort
@@ -117,5 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const sortEl = document.getElementById('jobSort');
   if (sortEl) sortEl.addEventListener('change', () => { activeSort = sortEl.value; render(); });
+  const searchEl = document.getElementById('jobSearch');
+  const clearEl = document.getElementById('jobSearchClear');
+  if (searchEl) {
+    searchEl.addEventListener('input', () => {
+      activeSearch = searchEl.value;
+      if (clearEl) clearEl.style.display = activeSearch ? 'flex' : 'none';
+      render();
+    });
+  }
+  if (clearEl) clearEl.addEventListener('click', () => {
+    searchEl.value = ''; activeSearch = ''; clearEl.style.display = 'none'; render(); searchEl.focus();
+  });
   loadJobs();
 });

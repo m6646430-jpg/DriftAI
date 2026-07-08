@@ -959,3 +959,42 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
 .legal-wrap li { margin-bottom: 6px; }
 .legal-wrap a { color: #a78bfa; }
 .legal-note { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25); border-radius: 12px; padding: 16px 18px; font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 40px; line-height: 1.6; }
+
+/* ===== JOB BOARD SEARCH BAR ===== */
+.jobboard-searchbar { position: relative; max-width: 640px; margin: 8px auto 20px; padding: 0 28px; }
+.jobboard-searchbar input { width: 100%; padding: 15px 44px 15px 18px; border-radius: 14px; border: 1.5px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); color: #fff; font-size: 15px; font-family: inherit; }
+.jobboard-searchbar input:focus { outline: none; border-color: #a78bfa; background: rgba(255,255,255,0.08); }
+.jobboard-searchbar input::placeholder { color: rgba(255,255,255,0.4); }
+.jobboard-searchbar button { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); display: none; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; border: none; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); cursor: pointer; font-size: 12px; }
+.jobboard-searchbar button:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+/* ===== FAQ PAGE ===== */
+.faq-wrap { max-width: 780px; margin: 0 auto; padding: 60px 28px 90px; }
+.faq-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; margin-bottom: 12px; overflow: hidden; background: rgba(255,255,255,0.03); transition: border-color 0.2s; }
+.faq-item.open { border-color: rgba(167,139,250,0.4); }
+.faq-q { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 20px; cursor: pointer; font-weight: 700; font-size: 15px; }
+.faq-q .faq-icon { flex-shrink: 0; font-size: 20px; color: #a78bfa; transition: transform 0.25s; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.faq-item.open .faq-a { max-height: 320px; }
+.faq-a p { padding: 0 20px 18px; color: rgba(255,255,255,0.65); font-size: 14px; line-height: 1.7; }
+.faq-a a { color: #a78bfa; }
+.faq-cat { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.35); font-weight: 800; margin: 32px 0 12px; }
+
+/* ===== ABOUT PAGE ===== */
+.about-wrap { max-width: 860px; margin: 0 auto; padding: 60px 28px 90px; }
+.about-hero { text-align: center; margin-bottom: 48px; }
+.about-hero h1 { font-size: 40px; font-weight: 900; margin: 10px 0; }
+.about-hero p { color: rgba(255,255,255,0.6); font-size: 16px; line-height: 1.7; max-width: 640px; margin: 0 auto; }
+.about-values { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 40px 0; }
+@media (max-width: 640px) { .about-values { grid-template-columns: 1fr; } }
+.about-val { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 22px; }
+.about-val .av-icon { font-size: 28px; margin-bottom: 10px; }
+.about-val h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+.about-val p { font-size: 13.5px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+.about-section { margin: 36px 0; }
+.about-section h2 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+.about-section p { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; }
+.about-cta { text-align: center; background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,142,247,0.1)); border: 1px solid rgba(124,58,237,0.3); border-radius: 20px; padding: 40px 28px; margin-top: 48px; }
+.about-cta h2 { font-size: 26px; font-weight: 900; margin-bottom: 10px; }
+.about-cta p { color: rgba(255,255,255,0.6); margin-bottom: 22px; }
