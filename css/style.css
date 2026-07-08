@@ -1154,3 +1154,19 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
 }
 @media (max-width: 900px) { .fr-2, .fr-4, .fr-5 { display: none; } .float-resume { width: 92px; } }
 @media (prefers-reduced-motion: reduce) { .float-resume { animation: none; opacity: 0.5; transform: rotate(-4deg); } }
+
+/* ===== NAV PHONE / WHATSAPP (top-right, highlighted) ===== */
+.nav-phone { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 800; white-space: nowrap; background: linear-gradient(135deg, #059669, #34d399); color: #fff !important; box-shadow: 0 4px 18px rgba(52,211,153,0.35); position: relative; transition: all 0.2s; }
+.nav-phone:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(52,211,153,0.5); }
+.nav-phone .np-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: np-pulse 1.6s ease-in-out infinite; }
+@keyframes np-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+@media (max-width: 1120px) { .nav-phone span.np-num { display: none; } .nav-phone { padding: 10px 12px; } }
+
+/* Keep the WhatsApp phone visible on mobile (icon-only, next to hamburger) */
+@media (max-width: 900px) {
+  .nav-cta { display: flex !important; margin-left: auto; }
+  .nav-cta > *:not(.nav-phone) { display: none !important; }
+  .hamburger { margin-left: 12px !important; }
+  .nav-phone { padding: 9px 12px; }
+  .nav-phone .np-num { display: none; }
+}
