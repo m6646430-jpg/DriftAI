@@ -152,16 +152,31 @@ const counterObserver = new IntersectionObserver((entries) => {
 const heroStats = document.querySelector('.hero-stats');
 if (heroStats) counterObserver.observe(heroStats);
 
-// ===== CONTACT FORM =====
+// ===== CONTACT FORM (Netlify Forms) =====
+// Submissions are captured by Netlify and appear under Forms in the dashboard
+// (enable email notifications there to get each lead in your inbox).
 function submitForm(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
+  const form = e.target;
+  const btn = form.querySelector('button[type="submit"]');
   btn.textContent = 'Sending...';
   btn.disabled = true;
-  setTimeout(() => {
-    e.target.style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
-  }, 1200);
+
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(new FormData(form)).toString(),
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('submit failed ' + res.status);
+      form.style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+    })
+    .catch(() => {
+      btn.textContent = 'Submit — Get Started Today 🚀';
+      btn.disabled = false;
+      alert("Sorry, something went wrong sending your message. Please try again, or email support@driftai.info");
+    });
 }
 
 // ===== SMOOTH SCROLL =====

@@ -497,24 +497,28 @@
     <div class="reveal">
       <h2>Ready to Land Your <span class="gradient-text">Dream Job?</span></h2>
       <p>Fill the form below — we'll reach out within 24 hours to get you started.</p>
-      <form class="contact-form" onsubmit="submitForm(event)">
+      <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="submitForm(event)">
+        <input type="hidden" name="form-name" value="contact" />
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
         <div class="form-row">
-          <input type="text" placeholder="Your Full Name" required />
-          <input type="email" placeholder="Your Email Address" required />
+          <input type="text" name="name" placeholder="Your Full Name" required />
+          <input type="email" name="email" placeholder="Your Email Address" required />
         </div>
         <div class="form-row">
-          <input type="tel" placeholder="Phone / WhatsApp Number" />
-          <select required>
+          <input type="tel" name="phone" placeholder="Phone / WhatsApp Number" />
+          <select name="plan" required>
             <option value="">Select a Plan</option>
             <option>Community — $9.99/month</option>
             <option>Job Hunt Starter — $199.99</option>
             <option>Job Hunt Growth — $349.99</option>
             <option>Job Hunt Unlimited — $599.99</option>
-            <option>One-time Resume — $99</option>
+            <option>Resume Only — $79.99</option>
+            <option>Resume + Cover Letter — $99.99</option>
+            <option>Complete Package — $149.99</option>
           </select>
         </div>
-        <input type="text" placeholder="Target Job Title (e.g. Software Engineer, Data Analyst)" required />
-        <textarea placeholder="Tell us about your background and the types of roles you're targeting..." rows="4"></textarea>
+        <input type="text" name="target_role" placeholder="Target Job Title (e.g. Software Engineer, Data Analyst)" required />
+        <textarea name="message" placeholder="Tell us about your background and the types of roles you're targeting..." rows="4"></textarea>
         <button type="submit" class="btn btn-primary btn-lg w-full">Submit — Get Started Today 🚀</button>
       </form>
       <div id="formSuccess" class="form-success" style="display:none;">
