@@ -80,28 +80,45 @@ function render() {
     return;
   }
 
+  const FLAGS = { US: '🇺🇸', CA: '🇨🇦', UK: '🇬🇧', EU: '🇪🇺', IN: '🇮🇳', AU: '🇦🇺', NZ: '🇳🇿' };
   list.innerHTML = jobs.map(j => {
-    const FLAGS = { US: '🇺🇸', CA: '🇨🇦', UK: '🇬🇧', EU: '🇪🇺', IN: '🇮🇳', AU: '🇦🇺', NZ: '🇳🇿' };
     const flag = FLAGS[j.country] || '🌐';
-    const salary = j.salary ? `<span class="jb-tag salary">${j.salary}</span>` : '';
-    const remote = j.remote ? `<span class="jb-tag">${j.remote}</span>` : '';
-    const sponsor = j.sponsor ? `<span class="jb-tag sponsor">${j.sponsor}</span>` : '';
+    const letter = (j.company || '?').trim().charAt(0).toUpperCase();
+    const level = levelOf(j.role);
+    const isRemote = /remote/i.test(j.remote || '');
+    const tags = [];
+    if (j.sponsor) tags.push(`<span class="jbc-tag visa">🛂 ${j.sponsor}</span>`);
+    if (j.salary) tags.push(`<span class="jbc-tag pay">${j.salary}</span>`);
+    if (isRemote) tags.push(`<span class="jbc-tag remote">🌐 Remote</span>`);
+    if (level) tags.push(`<span class="jbc-tag">${level}</span>`);
+    if (j.source) tags.push(`<span class="jbc-tag">${j.source}</span>`);
     return `
     <div class="jobboard-card">
-      <div class="jb-logo">${j.logo || '💼'}</div>
-      <div>
-        <div class="jb-role">${j.role}</div>
-        <div class="jb-company">${flag} ${j.company} · ${j.location}</div>
-        ${j.blurb ? `<div class="jb-blurb">✦ ${j.blurb}</div>` : ''}
-        <div class="jb-meta">${salary}${remote}${sponsor}</div>
+      <div class="jbc-head">
+        <div class="jbc-logo">${letter}</div>
+        <div class="jbc-co">
+          <div class="jbc-company">${j.company}</div>
+          <div class="jbc-posted">${j.posted || 'Recently'} · ${flag} ${j.country}</div>
+        </div>
       </div>
-      <div class="jb-right">
-        <div class="jb-posted">${j.posted || ''}</div>
-        <a href="${j.url || 'jobhunt.html'}" class="jb-apply" target="_blank" rel="noopener">Apply →</a>
-        <button class="jb-tailor" data-jobid="${j.id}">✨ Tailor Resume</button>
+      <div class="jbc-title">${j.role}</div>
+      <div class="jbc-loc">📍 ${(j.location || '—').split(/\s*[;/]\s*/)[0].slice(0, 40)}</div>
+      <div class="jbc-tags">${tags.join('')}</div>
+      <div class="jbc-actions">
+        <a href="${j.url || 'jobhunt.html'}" class="jbc-apply" target="_blank" rel="noopener">↗ Apply</a>
+        <button class="jbc-tailor jb-tailor" data-jobid="${j.id}">✨ Tailor Resume</button>
       </div>
     </div>`;
   }).join('');
+}
+
+// Derive experience level from the job title (honest heuristic).
+function levelOf(role) {
+  const t = (role || '').toLowerCase();
+  if (/\b(intern|internship|co-?op)\b/.test(t)) return 'internship';
+  if (/\b(junior|jr\.?|entry|graduate|new grad|apprentice)\b/.test(t)) return 'entry level';
+  if (/\b(senior|sr\.?|staff|principal|lead|director|head|vp|chief|manager)\b/.test(t)) return 'senior level';
+  return 'mid level';
 }
 
 // ===== FILTER WIRING =====

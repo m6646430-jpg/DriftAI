@@ -169,6 +169,7 @@ async function main() {
           postedAt: j.updated || null, // ISO date for sorting
           url: j.url, // EXACT posting link
           logo: LOGOS[category],
+          source: co.ats, // greenhouse / lever / ashby
         });
         kept++;
         if (kept >= 4) break; // cap per company for variety
