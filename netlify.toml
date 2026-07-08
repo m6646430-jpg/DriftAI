@@ -3,11 +3,10 @@
 
 [build]
   publish = "."
-  # Fetch fresh US/CA jobs at build time (runs on Netlify's servers, not your Mac).
-  # cron-job.org pings a Netlify Build Hook twice daily to trigger this.
-  # Needs GEMINI_API_KEY set in Netlify env vars. If the key/API is unavailable,
-  # the script keeps the committed data/jobs.json so the build never fails.
-  command = "node scripts/fetch-jobs-gemini.js"
+  # Fetch fresh jobs with EXACT posting links from public ATS feeds
+  # (Greenhouse/Lever/Ashby) at build time. Free, no API key needed.
+  # The scheduled function triggers a rebuild twice daily to refresh.
+  command = "node scripts/fetch-jobs-ats.js"
 
 [build.environment]
   NODE_VERSION = "20"

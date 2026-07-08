@@ -1,9 +1,8 @@
 // ===== DYNAMIC JOB BOARD =====
 // Renders jobs from data/jobs.json. Updated daily by scripts/fetch-jobs.js.
 
-// Feature flag: set to true to show live jobs again (board is paused while
-// we finalize exact per-posting apply links).
-const SHOW_JOBS = false;
+// Feature flag: jobs now have exact posting links from public ATS feeds.
+const SHOW_JOBS = true;
 
 let ALL_JOBS = [];
 let activeCountry = 'all';
