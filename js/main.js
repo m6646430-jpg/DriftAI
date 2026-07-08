@@ -77,7 +77,7 @@ function spawnCard() {
       <div style="color:rgba(255,255,255,0.85);font-size:12px;font-weight:700;">${card.company}</div>
       <div style="color:rgba(255,255,255,0.45);font-size:11px;">${card.role}</div>
     </div>
-    <div class="applied-tag">✓ Applied</div>`;
+    <div class="applied-tag">Now hiring</div>`;
   container.appendChild(el);
   setTimeout(() => el.remove(), 18000);
 }
@@ -105,7 +105,7 @@ function buildTicker() {
   const items = [...tickerData, ...tickerData]; // duplicate for seamless loop
   ticker.innerHTML = items.map(t => `
     <span class="ticker-item">
-      <span class="tick-status">✓ Applied</span>
+      <span class="tick-status">🟢 Hiring</span>
       <span class="tick-co">${t.company}</span>
       <span style="color:rgba(255,255,255,0.3)">·</span>
       <span>${t.role}</span>
