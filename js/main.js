@@ -9,11 +9,11 @@
 // Any element with class="payment-link" and data-plan="community" (etc.) will redirect
 // to the matching link automatically. data-plan defaults to "community" if omitted.
 const STRIPE_LINKS = {
-  community: 'https://buy.stripe.com/REPLACE_COMMUNITY',
-  jobhunt: 'https://buy.stripe.com/REPLACE_JOBHUNT',
-  resume_only: 'https://buy.stripe.com/REPLACE_RESUME_ONLY',
-  resume_rewrite: 'https://buy.stripe.com/REPLACE_RESUME_REWRITE',
-  resume_complete: 'https://buy.stripe.com/REPLACE_RESUME_COMPLETE',
+  community: 'https://buy.stripe.com/8x2aEXc408RXch660l4wM00',
+  jobhunt: 'https://buy.stripe.com/7sY28rec82tzfti3Sd4wM01',
+  resume_only: 'https://buy.stripe.com/6oU8wPaZWfgla8Y1K54wM02',
+  resume_rewrite: 'https://buy.stripe.com/7sY4gz5FC6JPbd2ewR4wM03',
+  resume_complete: 'https://buy.stripe.com/6oUdR91pmechgxm88t4wM04',
 };
 
 document.querySelectorAll('.payment-link').forEach(el => {
