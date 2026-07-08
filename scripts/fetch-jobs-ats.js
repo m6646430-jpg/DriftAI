@@ -63,6 +63,38 @@ const COMPANIES = [
   { ats: 'ashby', slug: 'watershed', name: 'Watershed' },
   { ats: 'ashby', slug: 'notion', name: 'Notion' },
   { ats: 'ashby', slug: 'wealthsimple', name: 'Wealthsimple' },
+  // Greenhouse — batch 2 (higher-volume employers)
+  { ats: 'greenhouse', slug: 'datadog', name: 'Datadog' },
+  { ats: 'greenhouse', slug: 'mongodb', name: 'MongoDB' },
+  { ats: 'greenhouse', slug: 'elastic', name: 'Elastic' },
+  { ats: 'greenhouse', slug: 'grafanalabs', name: 'Grafana Labs' },
+  { ats: 'greenhouse', slug: 'vercel', name: 'Vercel' },
+  { ats: 'greenhouse', slug: 'postman', name: 'Postman' },
+  { ats: 'greenhouse', slug: 'circleci', name: 'CircleCI' },
+  { ats: 'greenhouse', slug: 'cockroachlabs', name: 'Cockroach Labs' },
+  { ats: 'greenhouse', slug: 'planetscale', name: 'PlanetScale' },
+  { ats: 'greenhouse', slug: 'fivetran', name: 'Fivetran' },
+  { ats: 'greenhouse', slug: 'hightouch', name: 'Hightouch' },
+  { ats: 'greenhouse', slug: 'amplitude', name: 'Amplitude' },
+  { ats: 'greenhouse', slug: 'nuro', name: 'Nuro' },
+  { ats: 'greenhouse', slug: 'mercury', name: 'Mercury' },
+  { ats: 'greenhouse', slug: 'highnote', name: 'Highnote' },
+  { ats: 'greenhouse', slug: 'lithic', name: 'Lithic' },
+  { ats: 'greenhouse', slug: 'roblox', name: 'Roblox' },
+  { ats: 'greenhouse', slug: 'betterment', name: 'Betterment' },
+  { ats: 'greenhouse', slug: 'marqeta', name: 'Marqeta' },
+  { ats: 'greenhouse', slug: 'nubank', name: 'Nubank' },
+  { ats: 'greenhouse', slug: 'oscar', name: 'Oscar Health' },
+  { ats: 'greenhouse', slug: 'carta', name: 'Carta' },
+  // Ashby — AI-heavy employers
+  { ats: 'ashby', slug: 'openai', name: 'OpenAI' },
+  { ats: 'ashby', slug: 'cohere', name: 'Cohere' },
+  { ats: 'ashby', slug: 'perplexity', name: 'Perplexity' },
+  { ats: 'ashby', slug: 'sierra', name: 'Sierra' },
+  { ats: 'ashby', slug: 'harvey', name: 'Harvey' },
+  { ats: 'ashby', slug: 'baseten', name: 'Baseten' },
+  { ats: 'ashby', slug: 'modal', name: 'Modal' },
+  { ats: 'ashby', slug: 'cursor', name: 'Cursor' },
   // Lever
   { ats: 'lever', slug: 'spotify', name: 'Spotify' },
 ];
@@ -172,7 +204,7 @@ async function main() {
           source: co.ats, // greenhouse / lever / ashby
         });
         kept++;
-        if (kept >= 4) break; // cap per company for variety
+        if (kept >= 12) break; // cap per company for variety
       }
       console.log(`✓ ${co.name} (${co.ats}): ${kept} kept`);
     } catch (e) {
@@ -188,7 +220,7 @@ async function main() {
     const j = Math.floor(Math.random() * (i + 1));
     [all[i], all[j]] = [all[j], all[i]];
   }
-  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 60) };
+  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 400) };
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
   console.log(`\n✅ Wrote ${payload.jobs.length} jobs with EXACT posting links to data/jobs.json`);
 }

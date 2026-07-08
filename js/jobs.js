@@ -9,6 +9,8 @@ let activeCountry = 'all';
 let activeCat = 'all';
 let activeSort = 'recent';
 let activeSearch = '';
+const PAGE_SIZE = 24;
+let currentPage = 1;
 
 function renderComingSoon() {
   const list = document.getElementById('jobboardList');
@@ -76,12 +78,21 @@ function render() {
   }
 
   if (!jobs.length) {
-    list.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.4);padding:40px;">No roles match this filter yet — check back tomorrow, we update daily.</div>`;
+    list.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.4);padding:40px;grid-column:1/-1;">No roles match this filter yet — check back tomorrow, we update daily.</div>`;
+    renderPagebars(0, 1);
     return;
   }
 
+  // Pagination
+  const total = jobs.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageJobs = jobs.slice(start, start + PAGE_SIZE);
+  renderPagebars(total, totalPages);
+
   const FLAGS = { US: '🇺🇸', CA: '🇨🇦', UK: '🇬🇧', EU: '🇪🇺', IN: '🇮🇳', AU: '🇦🇺', NZ: '🇳🇿' };
-  list.innerHTML = jobs.map(j => {
+  list.innerHTML = pageJobs.map(j => {
     const flag = FLAGS[j.country] || '🌐';
     const letter = (j.company || '?').trim().charAt(0).toUpperCase();
     const level = levelOf(j.role);
@@ -112,6 +123,27 @@ function render() {
   }).join('');
 }
 
+// Render the "Showing X–Y of Z · Page N of M · Prev/Next" bars (top + bottom).
+function renderPagebars(total, totalPages) {
+  const a = total ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const b = Math.min(currentPage * PAGE_SIZE, total);
+  const html = `
+    <div class="jbp-count">Showing <strong>${a}-${b}</strong> of <strong>${total}</strong> jobs</div>
+    <div class="jbp-nav">
+      <span class="jbp-page">Page ${currentPage} of ${totalPages}</span>
+      <button class="jbp-btn" data-page="prev" ${currentPage <= 1 ? 'disabled' : ''}>‹ Prev</button>
+      <button class="jbp-btn" data-page="next" ${currentPage >= totalPages ? 'disabled' : ''}>Next ›</button>
+    </div>`;
+  ['jobsPageTop', 'jobsPageBottom'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = html; });
+}
+
+function goToPage(dir) {
+  currentPage += dir === 'next' ? 1 : -1;
+  if (currentPage < 1) currentPage = 1;
+  render();
+  document.querySelector('.jobboard-filters')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // Derive experience level from the job title (honest heuristic).
 function levelOf(role) {
   const t = (role || '').toLowerCase();
@@ -128,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('[data-country]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeCountry = btn.dataset.country;
+      currentPage = 1;
       render();
     });
   });
@@ -136,22 +169,29 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeCat = btn.dataset.cat;
+      currentPage = 1;
       render();
     });
   });
+  // Pagination buttons (delegated, top + bottom bars)
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.jbp-btn');
+    if (b && !b.disabled) goToPage(b.dataset.page);
+  });
   const sortEl = document.getElementById('jobSort');
-  if (sortEl) sortEl.addEventListener('change', () => { activeSort = sortEl.value; render(); });
+  if (sortEl) sortEl.addEventListener('change', () => { activeSort = sortEl.value; currentPage = 1; render(); });
   const searchEl = document.getElementById('jobSearch');
   const clearEl = document.getElementById('jobSearchClear');
   if (searchEl) {
     searchEl.addEventListener('input', () => {
       activeSearch = searchEl.value;
       if (clearEl) clearEl.style.display = activeSearch ? 'flex' : 'none';
+      currentPage = 1;
       render();
     });
   }
   if (clearEl) clearEl.addEventListener('click', () => {
-    searchEl.value = ''; activeSearch = ''; clearEl.style.display = 'none'; render(); searchEl.focus();
+    searchEl.value = ''; activeSearch = ''; clearEl.style.display = 'none'; currentPage = 1; render(); searchEl.focus();
   });
   loadJobs();
 });
