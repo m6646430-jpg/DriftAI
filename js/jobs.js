@@ -98,6 +98,7 @@ function render() {
       <div class="jb-right">
         <div class="jb-posted">${j.posted || ''}</div>
         <a href="${j.url || 'jobhunt.html'}" class="jb-apply" target="_blank" rel="noopener">Apply →</a>
+        <button class="jb-tailor" data-jobid="${j.id}">✨ Tailor Resume</button>
       </div>
     </div>`;
   }).join('');

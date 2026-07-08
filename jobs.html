@@ -134,7 +134,61 @@
   </div>
 </footer>
 
+<!-- TAILOR RESUME MODAL -->
+<div class="tailor-overlay" id="tailorModal" style="display:none;">
+  <div class="tailor-box">
+    <button class="tailor-close" id="tailorClose" aria-label="Close">✕</button>
+
+    <!-- Upload state -->
+    <div id="tailorUpload">
+      <div class="tailor-head">
+        <div class="tailor-badge">✨ AI Resume Tailoring · Free</div>
+        <h2>Tailor your resume for<br><span id="tailorTarget" class="gradient-text"></span></h2>
+        <p>Upload your resume and our AI rewrites it to fit this exact role — a tailored summary, stronger bullet points, and the keywords this job screens for.</p>
+      </div>
+      <div class="tailor-drop" id="tailorDrop">
+        <div class="tailor-drop-icon">📄</div>
+        <div class="tailor-drop-title">Drop your resume, or click to upload</div>
+        <div class="tailor-drop-sub">PDF only · never stored</div>
+        <input type="file" id="tailorFile" accept="application/pdf" hidden />
+      </div>
+      <div id="tailorFileName" class="tailor-filename" style="display:none;"></div>
+      <button class="btn btn-primary btn-lg w-full" id="tailorBtn" disabled>✨ Tailor My Resume →</button>
+      <div class="tailor-privacy">🔒 Processed by AI for your tailored draft, then discarded.</div>
+      <div id="tailorError" class="tailor-error" style="display:none;"></div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="tailorLoading" style="display:none;text-align:center;padding:36px 10px;">
+      <div class="score-spinner" style="margin:0 auto 18px;"></div>
+      <div id="tailorLoadingText" style="color:rgba(255,255,255,0.6);font-size:14px;">Reading your resume and tailoring it to this role…</div>
+    </div>
+
+    <!-- Result state -->
+    <div id="tailorResult" style="display:none;">
+      <div class="tailor-head">
+        <div class="tailor-badge">✅ Tailored draft ready</div>
+        <h2 style="font-size:22px;">Your resume, tailored for<br><span id="tailorTarget2" class="gradient-text"></span></h2>
+      </div>
+      <div class="tailor-section"><h4>Tailored professional summary</h4><p id="tailorSummary"></p></div>
+      <div class="tailor-section"><h4>Stronger, role-matched bullet points</h4><ul id="tailorBullets"></ul></div>
+      <div class="tailor-section"><h4>Keywords to include for this job</h4><div id="tailorKeywords" class="tailor-kw"></div></div>
+      <div class="tailor-section"><h4>Biggest thing to improve</h4><p id="tailorGap"></p></div>
+
+      <div class="tailor-cta">
+        <div class="tailor-cta-title">Want this done professionally — full resume, by a human?</div>
+        <p>Get the complete, ATS-optimized rewrite tailored to this role in 48 hours.</p>
+        <div class="tailor-cta-btns">
+          <a href="resume-services.html" class="btn btn-primary">Get the full rewrite — from $79.99 →</a>
+          <button class="btn btn-ghost" id="tailorAgain">Tailor another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/main.js"></script>
 <script src="js/jobs.js"></script>
+<script src="js/tailor.js"></script>
 </body>
 </html>
