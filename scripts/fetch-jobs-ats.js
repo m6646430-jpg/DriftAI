@@ -80,6 +80,9 @@ const COUNTRY_RULES = [
 
 const TARGET = new Set(['US', 'CA', 'UK', 'AU', 'NZ', 'IN', 'EU']);
 
+// Only show postings newer than this — keeps the board fresh. Change to taste.
+const MAX_AGE_DAYS = 30;
+
 function detectCountry(loc) {
   for (const r of COUNTRY_RULES) if (r.re.test(loc || '')) return r.code;
   return null;
@@ -144,6 +147,11 @@ async function main() {
         if (!country || !TARGET.has(country)) continue;
         const category = detectCategory(j.title);
         if (category === 'Other') continue; // keep the board focused on our 4 fields
+        // Freshness: drop postings older than MAX_AGE_DAYS so the board stays recent.
+        if (j.updated) {
+          const ageDays = (Date.now() - new Date(j.updated).getTime()) / 86400000;
+          if (ageDays > MAX_AGE_DAYS) continue;
+        }
         const key = (j.title + co.name).toLowerCase();
         if (seen.has(key)) continue;
         seen.add(key);

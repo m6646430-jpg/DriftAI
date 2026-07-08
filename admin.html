@@ -65,8 +65,28 @@
 
     .admin-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
   </style>
+  <style>
+    #adminGate { position: fixed; inset: 0; z-index: 999; background: #060614; display: flex; align-items: center; justify-content: center; }
+    #adminGate .g-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 32px; width: 320px; text-align: center; }
+    #adminGate h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    #adminGate p { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 18px; }
+    #adminGate input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #fff; font-size: 14px; margin-bottom: 12px; }
+    #adminGate .g-err { color: #f87171; font-size: 12px; min-height: 16px; margin-bottom: 8px; }
+    body.locked { overflow: hidden; }
+  </style>
 </head>
-<body>
+<body class="locked">
+
+<!-- Password gate (basic deterrent — see note in the gate script) -->
+<div id="adminGate">
+  <div class="g-box">
+    <h2>🔒 DriftAI Admin</h2>
+    <p>Enter the admin password to continue.</p>
+    <input type="password" id="gatePwd" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdmin()" />
+    <div class="g-err" id="gateErr"></div>
+    <button class="btn btn-primary w-full" onclick="checkAdmin()">Unlock →</button>
+  </div>
+</div>
 
 <div class="admin-wrap">
   <div class="admin-head">
@@ -132,6 +152,30 @@
   </div>
 </div>
 
+<script>
+// ---- ADMIN PASSWORD GATE ----
+// NOTE: this is a client-side deterrent, not strong security. Anyone technical
+// can still read data/dashboard.json directly. For real protection, use
+// Netlify password protection or move the admin behind Supabase login later.
+// Change this password before deploying:
+const ADMIN_PASSWORD = 'driftai-admin-2026';
+
+function unlockAdmin() {
+  document.getElementById('adminGate').style.display = 'none';
+  document.body.classList.remove('locked');
+}
+function checkAdmin() {
+  const val = document.getElementById('gatePwd').value;
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('driftai_admin', 'ok');
+    unlockAdmin();
+  } else {
+    document.getElementById('gateErr').textContent = 'Wrong password.';
+  }
+}
+// Stay unlocked for the session once entered
+if (sessionStorage.getItem('driftai_admin') === 'ok') unlockAdmin();
+</script>
 <script src="js/admin.js"></script>
 </body>
 </html>
