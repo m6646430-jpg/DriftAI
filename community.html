@@ -94,7 +94,7 @@
     <div class="pricing-card popular">
       <div class="popular-badge">Most Popular</div>
       <div class="plan-name">Community</div>
-      <div class="plan-price" id="community-price">$9<span>.99 / month</span></div>
+      <div class="plan-price" id="community-price">$9<span>.99 USD / mo</span></div>
       <div class="plan-desc">Billed monthly · cancel anytime</div>
       <ul class="plan-features">
         <li>Visa filter + weekly visa updates (7 countries)</li>
@@ -166,8 +166,8 @@ function toggleAnnual() {
   isAnnual = !isAnnual;
   document.getElementById('annualToggle').classList.toggle('on', isAnnual);
   document.getElementById('community-price').innerHTML = isAnnual
-    ? '$99<span>.99 / year</span>'
-    : '$9<span>.99 / month</span>';
+    ? '$99<span>.99 USD / yr</span>'
+    : '$9<span>.99 USD / mo</span>';
 }
 </script>
 </body>

@@ -1,11 +1,11 @@
 // ===== PAYMENT (Stripe Payment Links) =====
 // Create one Stripe Payment Link per product at https://dashboard.stripe.com/payment-links
 // then paste each generated URL below, replacing the placeholders.
-//   community        -> Recurring, $9.99 CAD/month
-//   jobhunt          -> Recurring, $150 CAD/month (Job Hunt Program)
-//   resume_only       -> One-time, $79.99 CAD
-//   resume_rewrite    -> One-time, $99.99 CAD (Resume + Cover Letter)
-//   resume_complete   -> One-time, $149.99 CAD (Complete Package)
+//   community        -> Recurring, $9.99 USD/month
+//   jobhunt          -> Recurring, $150 USD/month (Job Hunt Program)
+//   resume_only       -> One-time, $79.99 USD
+//   resume_rewrite    -> One-time, $99.99 USD (Resume + Cover Letter)
+//   resume_complete   -> One-time, $149.99 USD (Complete Package)
 // Any element with class="payment-link" and data-plan="community" (etc.) will redirect
 // to the matching link automatically. data-plan defaults to "community" if omitted.
 const STRIPE_LINKS = {
