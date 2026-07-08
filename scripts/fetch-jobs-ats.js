@@ -20,7 +20,9 @@ const path = require('path');
 const OUT = path.join(__dirname, '..', 'data', 'jobs.json');
 
 // Curated visa-friendly companies. {ats, slug, name}
+// All slugs verified to return live jobs. Add more visa-friendly companies here.
 const COMPANIES = [
+  // Greenhouse
   { ats: 'greenhouse', slug: 'stripe', name: 'Stripe' },
   { ats: 'greenhouse', slug: 'airbnb', name: 'Airbnb' },
   { ats: 'greenhouse', slug: 'coinbase', name: 'Coinbase' },
@@ -31,16 +33,38 @@ const COMPANIES = [
   { ats: 'greenhouse', slug: 'cloudflare', name: 'Cloudflare' },
   { ats: 'greenhouse', slug: 'gitlab', name: 'GitLab' },
   { ats: 'greenhouse', slug: 'robinhood', name: 'Robinhood' },
-  { ats: 'greenhouse', slug: 'doordash', name: 'DoorDash' },
   { ats: 'greenhouse', slug: 'instacart', name: 'Instacart' },
-  { ats: 'greenhouse', slug: 'wealthsimple', name: 'Wealthsimple' },
   { ats: 'greenhouse', slug: 'gusto', name: 'Gusto' },
   { ats: 'greenhouse', slug: 'brex', name: 'Brex' },
   { ats: 'greenhouse', slug: 'affirm', name: 'Affirm' },
   { ats: 'greenhouse', slug: 'asana', name: 'Asana' },
-  { ats: 'lever', slug: 'plaid', name: 'Plaid' },
+  { ats: 'greenhouse', slug: 'figma', name: 'Figma' },
+  { ats: 'greenhouse', slug: 'discord', name: 'Discord' },
+  { ats: 'greenhouse', slug: 'samsara', name: 'Samsara' },
+  { ats: 'greenhouse', slug: 'faire', name: 'Faire' },
+  { ats: 'greenhouse', slug: 'checkr', name: 'Checkr' },
+  { ats: 'greenhouse', slug: 'chime', name: 'Chime' },
+  { ats: 'greenhouse', slug: 'lyft', name: 'Lyft' },
+  { ats: 'greenhouse', slug: 'twitch', name: 'Twitch' },
+  { ats: 'greenhouse', slug: 'sofi', name: 'SoFi' },
+  { ats: 'greenhouse', slug: 'doordashusa', name: 'DoorDash' },
+  { ats: 'greenhouse', slug: 'flexport', name: 'Flexport' },
+  { ats: 'greenhouse', slug: 'airtable', name: 'Airtable' },
+  { ats: 'greenhouse', slug: 'webflow', name: 'Webflow' },
+  { ats: 'greenhouse', slug: 'gemini', name: 'Gemini' },
+  { ats: 'greenhouse', slug: 'anthropic', name: 'Anthropic' },
+  { ats: 'greenhouse', slug: 'scaleai', name: 'Scale AI' },
+  // Ashby
   { ats: 'ashby', slug: 'ramp', name: 'Ramp' },
-  { ats: 'ashby', slug: 'deel', name: 'Deel' },
+  { ats: 'ashby', slug: 'linear', name: 'Linear' },
+  { ats: 'ashby', slug: 'vanta', name: 'Vanta' },
+  { ats: 'ashby', slug: 'posthog', name: 'PostHog' },
+  { ats: 'ashby', slug: 'replit', name: 'Replit' },
+  { ats: 'ashby', slug: 'watershed', name: 'Watershed' },
+  { ats: 'ashby', slug: 'notion', name: 'Notion' },
+  { ats: 'ashby', slug: 'wealthsimple', name: 'Wealthsimple' },
+  // Lever
+  { ats: 'lever', slug: 'spotify', name: 'Spotify' },
 ];
 
 // Only keep jobs in the markets we serve.
@@ -138,7 +162,7 @@ async function main() {
           logo: LOGOS[category],
         });
         kept++;
-        if (kept >= 6) break; // cap per company for variety
+        if (kept >= 4) break; // cap per company for variety
       }
       console.log(`✓ ${co.name} (${co.ats}): ${kept} kept`);
     } catch (e) {
@@ -148,8 +172,13 @@ async function main() {
 
   if (!all.length) { console.log('No jobs — keeping existing data/jobs.json.'); process.exit(0); }
 
-  // newest-ish first, cap board size
-  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 40) };
+  // Shuffle so the board shows a mix of companies + countries, not just the
+  // first-listed ones (Fisher-Yates).
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [all[i], all[j]] = [all[j], all[i]];
+  }
+  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 60) };
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
   console.log(`\n✅ Wrote ${payload.jobs.length} jobs with EXACT posting links to data/jobs.json`);
 }

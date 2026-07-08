@@ -61,7 +61,8 @@ function render() {
   }
 
   list.innerHTML = jobs.map(j => {
-    const flag = j.country === 'US' ? '🇺🇸' : j.country === 'CA' ? '🇨🇦' : '🌐';
+    const FLAGS = { US: '🇺🇸', CA: '🇨🇦', UK: '🇬🇧', EU: '🇪🇺', IN: '🇮🇳', AU: '🇦🇺', NZ: '🇳🇿' };
+    const flag = FLAGS[j.country] || '🌐';
     const salary = j.salary ? `<span class="jb-tag salary">${j.salary}</span>` : '';
     const remote = j.remote ? `<span class="jb-tag">${j.remote}</span>` : '';
     const sponsor = j.sponsor ? `<span class="jb-tag sponsor">${j.sponsor}</span>` : '';
