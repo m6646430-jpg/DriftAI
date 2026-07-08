@@ -2,9 +2,7 @@
 // Create one Stripe Payment Link per product at https://dashboard.stripe.com/payment-links
 // then paste each generated URL below, replacing the placeholders.
 //   community        -> Recurring, $9.99 CAD/month
-//   jobhunt_starter   -> One-time, $199.99 CAD
-//   jobhunt_growth    -> One-time, $349.99 CAD
-//   jobhunt_unlimited -> One-time, $599.99 CAD
+//   jobhunt          -> Recurring, $150 CAD/month (Job Hunt Program)
 //   resume_only       -> One-time, $79.99 CAD
 //   resume_rewrite    -> One-time, $99.99 CAD (Resume + Cover Letter)
 //   resume_complete   -> One-time, $149.99 CAD (Complete Package)
@@ -12,9 +10,7 @@
 // to the matching link automatically. data-plan defaults to "community" if omitted.
 const STRIPE_LINKS = {
   community: 'https://buy.stripe.com/REPLACE_COMMUNITY',
-  jobhunt_starter: 'https://buy.stripe.com/REPLACE_JOBHUNT_STARTER',
-  jobhunt_growth: 'https://buy.stripe.com/REPLACE_JOBHUNT_GROWTH',
-  jobhunt_unlimited: 'https://buy.stripe.com/REPLACE_JOBHUNT_UNLIMITED',
+  jobhunt: 'https://buy.stripe.com/REPLACE_JOBHUNT',
   resume_only: 'https://buy.stripe.com/REPLACE_RESUME_ONLY',
   resume_rewrite: 'https://buy.stripe.com/REPLACE_RESUME_REWRITE',
   resume_complete: 'https://buy.stripe.com/REPLACE_RESUME_COMPLETE',
