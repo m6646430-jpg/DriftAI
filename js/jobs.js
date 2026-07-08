@@ -1,12 +1,35 @@
 // ===== DYNAMIC JOB BOARD =====
 // Renders jobs from data/jobs.json. Updated daily by scripts/fetch-jobs.js.
+
+// Feature flag: set to true to show live jobs again (board is paused while
+// we finalize exact per-posting apply links).
+const SHOW_JOBS = false;
+
 let ALL_JOBS = [];
 let activeCountry = 'all';
 let activeCat = 'all';
 
+function renderComingSoon() {
+  const list = document.getElementById('jobboardList');
+  const meta = document.getElementById('jobsMeta');
+  if (meta) meta.innerHTML = '<span style="color:#fbbf24;">●</span> Job board launching soon';
+  document.querySelectorAll('.jobboard-filter').forEach(b => { b.disabled = true; b.style.opacity = '0.4'; b.style.cursor = 'default'; });
+  if (list) list.innerHTML = `
+    <div style="text-align:center;padding:56px 24px;background:rgba(255,255,255,0.03);border:1px dashed rgba(251,191,36,0.35);border-radius:16px;">
+      <div style="font-size:40px;margin-bottom:14px;">🚧</div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:8px;">Job Board launching very soon</div>
+      <p style="color:rgba(255,255,255,0.55);max-width:440px;margin:0 auto 22px;font-size:14px;line-height:1.6;">
+        We're verifying every listing so each Apply button takes you to the real,
+        live job posting — no dead links, no ghost jobs. Check back shortly.
+      </p>
+      <a href="index.html#resume-score" class="btn btn-primary">Meanwhile — score your resume free →</a>
+    </div>`;
+}
+
 async function loadJobs() {
   const list = document.getElementById('jobboardList');
   const meta = document.getElementById('jobsMeta');
+  if (!SHOW_JOBS) return renderComingSoon();
   try {
     const res = await fetch('data/jobs.json?t=' + Date.now()); // cache-bust so daily updates show
     const data = await res.json();
