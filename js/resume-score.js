@@ -3,8 +3,8 @@
 // On localhost (static preview) the function isn't available, so a mock
 // response is used to preview the UI.
 
-// TODO: replace with your real WhatsApp number in international format (digits only, no +).
-const WHATSAPP_NUMBER = '15555555555';
+// DriftAI business WhatsApp (international format, digits only).
+const WHATSAPP_NUMBER = '16474953399';
 const RING_CIRCUMFERENCE = 327;
 
 const el = id => document.getElementById(id);
