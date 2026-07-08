@@ -39,6 +39,22 @@ async function authSignUp({ name, email, password }) {
   return user;
 }
 
+// ---- SOCIAL LOGIN (Google / GitHub) ----
+// Requires Supabase configured AND the provider enabled in your Supabase
+// dashboard (Authentication -> Providers). Cannot work in demo mode.
+async function authOAuth(provider) {
+  if (!AUTH_CONFIGURED) {
+    alert('Sign in with ' + provider + ' turns on once Supabase is connected (a quick, free setup). For now, please use email sign-up.');
+    return;
+  }
+  const sb = sbClient();
+  const { error } = await sb.auth.signInWithOAuth({
+    provider, // 'google' or 'github'
+    options: { redirectTo: window.location.origin + '/members.html' },
+  });
+  if (error) alert(error.message);
+}
+
 // ---- LOG IN ----
 async function authLogIn({ email, password }) {
   if (AUTH_CONFIGURED) {
