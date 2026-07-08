@@ -6,8 +6,8 @@
 //      (from your Supabase project → Settings → API). The anon key is PUBLIC by
 //      design and safe in frontend code; security is enforced by Row Level
 //      Security in Supabase, not by hiding this key.
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';        // e.g. https://abcd.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://nldrbixsorjxbdkakfoj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sZHJiaXhzb3JqeGJka2FrZm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MzQ3MDIsImV4cCI6MjA5OTExMDcwMn0.DCyPGyn12G8bdwhg2DKSfH-riK12Fvh5ORibyKcnM7U';
 
 const AUTH_CONFIGURED = !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
 const DEMO_KEY = 'driftai_demo_user';
@@ -27,7 +27,8 @@ async function authSignUp({ name, email, password }) {
       email, password, options: { data: { full_name: name } },
     });
     if (error) throw new Error(error.message);
-    return data.user;
+    // If no session, Supabase requires email confirmation before login.
+    return { user: data.user, needsConfirmation: !data.session };
   }
   // DEMO mode
   await _delay(600);
@@ -36,7 +37,7 @@ async function authSignUp({ name, email, password }) {
   const user = { name, email, password, created: new Date().toISOString() };
   localStorage.setItem(DEMO_KEY, JSON.stringify(user));
   localStorage.setItem('driftai_session', '1');
-  return user;
+  return { user, needsConfirmation: false };
 }
 
 // ---- SOCIAL LOGIN (Google / GitHub) ----

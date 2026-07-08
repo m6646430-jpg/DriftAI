@@ -115,7 +115,17 @@ async function doSignup(e) {
   const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Creating…';
   const f = new FormData(e.target);
   try {
-    await authSignUp({ name: f.get('name'), email: f.get('email'), password: f.get('password') });
+    const res = await authSignUp({ name: f.get('name'), email: f.get('email'), password: f.get('password') });
+    if (res && res.needsConfirmation) {
+      // Show a "check your email" state instead of redirecting
+      document.getElementById('signupForm').innerHTML =
+        '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="font-size:40px;margin-bottom:12px;">📧</div>' +
+        '<h1 style="font-size:22px;margin-bottom:8px;">Almost there!</h1>' +
+        '<p class="auth-sub">We sent a confirmation link to <strong>' + f.get('email') + '</strong>. ' +
+        'Click it to activate your account, then come back and log in.</p></div>';
+      return;
+    }
     window.location.href = 'members.html';
   } catch (err) {
     document.getElementById('signupError').textContent = err.message;
