@@ -1074,3 +1074,27 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
 .jbp-btn { padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; border: 1.5px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; transition: all 0.2s; }
 .jbp-btn:hover:not([disabled]) { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
 .jbp-btn[disabled] { opacity: 0.35; cursor: default; }
+
+/* ===== SAMPLE RESUME — 3 DISTINCT TEMPLATE STYLES ===== */
+/* 1. Classic (Full Stack) — refined default, purple accent */
+.paper.p-classic .p-title { color: #6d28d9; }
+.paper.p-classic h5 { letter-spacing: 0.5px; }
+
+/* 2. Modern (Data Engineer) — gradient header band, teal accent */
+.paper.p-modern { padding: 0; }
+.paper.p-modern .pm-band { background: linear-gradient(135deg, #0d9488, #059669); padding: 16px 18px 12px; }
+.paper.p-modern .pm-name { font-size: 15px; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+.paper.p-modern .pm-role { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.95); margin-top: 1px; }
+.paper.p-modern .pm-contact { font-size: 8px; color: rgba(255,255,255,0.85); margin-top: 5px; }
+.paper.p-modern .pm-content { padding: 12px 18px 8px; }
+.paper.p-modern h6 { color: #0d9488; border-top: 2px solid #d1faf0; padding-top: 6px; }
+.paper.p-modern .p-co { color: #0d9488; }
+.paper.p-modern .p-skills span { background: #d1faf0; color: #0f766e; }
+
+/* 3. Sleek (AI Engineer) — left accent bar, blue, mono skill tags */
+.paper.p-sleek { border-left: 5px solid #2563eb; }
+.paper.p-sleek .ps-top { border-bottom: 2px solid #2563eb; padding-bottom: 8px; margin-bottom: 8px; }
+.paper.p-sleek .ps-title { font-size: 10.5px; font-weight: 700; color: #2563eb; margin: 2px 0; }
+.paper.p-sleek h6 { color: #2563eb; }
+.paper.p-sleek .p-co { color: #2563eb; }
+.paper.p-sleek .p-skills span { background: transparent; color: #1e40af; border: 1px solid #93c5fd; font-family: "SF Mono", Menlo, monospace; font-size: 7.5px; }
