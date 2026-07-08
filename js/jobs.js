@@ -54,7 +54,7 @@ function render() {
       </div>
       <div class="jb-right">
         <div class="jb-posted">${j.posted || ''}</div>
-        <a href="community.html" class="jb-apply">View →</a>
+        <a href="${j.url || 'jobhunt.html'}" class="jb-apply" target="_blank" rel="noopener">Apply →</a>
       </div>
     </div>`;
   }).join('');
