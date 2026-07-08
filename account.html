@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In / Sign Up — DriftAI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html">Job Board</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="jobs.html" class="btn btn-outline">Search Jobs Free</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="showTab('login')">Log In</button>
+      <button class="auth-tab" id="tabSignup" onclick="showTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form class="auth-form" id="loginForm" onsubmit="doLogin(event)">
+      <h1>Welcome back</h1>
+      <p class="auth-sub">Log in to your DriftAI member area.</p>
+      <input type="email" name="email" placeholder="Email address" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <div class="auth-error" id="loginError"></div>
+      <button type="submit" class="btn btn-primary btn-lg w-full">Log In →</button>
+    </form>
+
+    <!-- SIGNUP -->
+    <form class="auth-form" id="signupForm" style="display:none;" onsubmit="doSignup(event)">
+      <h1>Create your account</h1>
+      <p class="auth-sub">Join the DriftAI community — visa updates, curated jobs & more.</p>
+      <input type="text" name="name" placeholder="Full name" required />
+      <input type="email" name="email" placeholder="Email address" required />
+      <input type="password" name="password" placeholder="Password (min 6 characters)" minlength="6" required />
+      <div class="auth-error" id="signupError"></div>
+      <button type="submit" class="btn btn-primary btn-lg w-full">Create Account →</button>
+      <p class="auth-fine">By signing up you agree to our Terms & Privacy Policy.</p>
+    </form>
+
+    <div class="auth-mode" id="authMode"></div>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+function showTab(which) {
+  const login = which === 'login';
+  document.getElementById('loginForm').style.display = login ? '' : 'none';
+  document.getElementById('signupForm').style.display = login ? 'none' : '';
+  document.getElementById('tabLogin').classList.toggle('active', login);
+  document.getElementById('tabSignup').classList.toggle('active', !login);
+}
+// If arriving with #signup, open that tab
+if (location.hash === '#signup') showTab('signup');
+
+// Already logged in? Go to the member area.
+authCurrentUser().then(u => { if (u) window.location.href = 'members.html'; });
+
+// Show which mode we're in (demo vs live) so it's never confusing while testing
+document.getElementById('authMode').textContent = (typeof AUTH_CONFIGURED !== 'undefined' && AUTH_CONFIGURED)
+  ? '' : '🧪 Demo mode — accounts are stored in this browser only (for testing).';
+
+async function doLogin(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Logging in…';
+  const f = new FormData(e.target);
+  try {
+    await authLogIn({ email: f.get('email'), password: f.get('password') });
+    window.location.href = 'members.html';
+  } catch (err) {
+    document.getElementById('loginError').textContent = err.message;
+    btn.disabled = false; btn.textContent = 'Log In →';
+  }
+}
+async function doSignup(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Creating…';
+  const f = new FormData(e.target);
+  try {
+    await authSignUp({ name: f.get('name'), email: f.get('email'), password: f.get('password') });
+    window.location.href = 'members.html';
+  } catch (err) {
+    document.getElementById('signupError').textContent = err.message;
+    btn.disabled = false; btn.textContent = 'Create Account →';
+  }
+}
+</script>
+</body>
+</html>

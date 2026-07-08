@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Member Area — DriftAI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html">Job Board</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button class="btn btn-outline" onclick="authLogOut()">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<div class="member-wrap" id="memberContent" style="opacity:0;">
+  <div class="member-hero">
+    <div class="section-label">Member Area</div>
+    <h1>Welcome back, <span class="gradient-text" id="memberName">Member</span> 👋</h1>
+    <p>Your job hunt headquarters. Everything below is members-only.</p>
+  </div>
+
+  <div class="member-grid">
+    <a href="jobs.html" class="member-tile">
+      <div class="mt-icon">🎯</div>
+      <div class="mt-title">Visa-Sponsorship Job Filter</div>
+      <div class="mt-desc">Curated roles from companies that sponsor — updated twice daily.</div>
+    </a>
+    <div class="member-tile">
+      <div class="mt-icon">🌍</div>
+      <div class="mt-title">Weekly Visa Updates</div>
+      <div class="mt-desc">Latest immigration news for 🇺🇸 🇨🇦 🇬🇧 🇪🇺 🇮🇳 🇦🇺 🇳🇿 — newest first.</div>
+      <div class="mt-tag">New this week</div>
+    </div>
+    <div class="member-tile">
+      <div class="mt-icon">📚</div>
+      <div class="mt-title">$10K+ Template Library</div>
+      <div class="mt-desc">ATS-cleared resume & cover-letter templates, negotiation scripts.</div>
+    </div>
+    <a href="resume-services.html" class="member-tile">
+      <div class="mt-icon">💸</div>
+      <div class="mt-title">10% Off Resume Services</div>
+      <div class="mt-desc">Your member discount applies automatically at checkout.</div>
+    </a>
+  </div>
+
+  <div class="member-account">
+    <h3>Your account</h3>
+    <div class="member-row"><span>Name</span><span id="accName">—</span></div>
+    <div class="member-row"><span>Email</span><span id="accEmail">—</span></div>
+    <div class="member-row"><span>Plan</span><span>Community · $9.99/mo</span></div>
+    <button class="btn btn-ghost" onclick="authLogOut()" style="margin-top:12px;">Log Out</button>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+(async () => {
+  const user = await requireAuth('account.html'); // redirects to login if not signed in
+  if (!user) return;
+  document.getElementById('memberName').textContent = (user.name || 'Member').split(' ')[0];
+  document.getElementById('accName').textContent = user.name || '—';
+  document.getElementById('accEmail').textContent = user.email || '—';
+  document.getElementById('memberContent').style.opacity = '1';
+})();
+</script>
+</body>
+</html>
