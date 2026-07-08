@@ -67,8 +67,23 @@
 
       <!-- Loading state -->
       <div id="scoreLoading" class="score-loading" style="display:none;">
-        <div class="score-spinner"></div>
-        <div class="score-loading-text">Reading your resume… scoring against 2026 ATS standards…</div>
+        <div class="scan-head">
+          <div class="score-spinner"></div>
+          <div>
+            <div class="scan-title">Analyzing your resume…</div>
+            <div class="scan-status" id="scanStatus">Opening your document…</div>
+          </div>
+        </div>
+
+        <!-- Live "reading" box showing the actual resume text being scanned -->
+        <div class="scan-box">
+          <div class="scan-scroll" id="scanText"></div>
+          <div class="scan-line"></div>
+          <div class="scan-fade"></div>
+        </div>
+
+        <div class="scan-progress"><div class="scan-progress-fill" id="scanFill"></div></div>
+        <div class="scan-meta"><span id="scanPercent">0%</span><span>DriftAI ATS Engine · 2026</span></div>
       </div>
 
       <!-- Result state -->

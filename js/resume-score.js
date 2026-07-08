@@ -48,30 +48,139 @@ function fileToBase64(file) {
   });
 }
 
+// ===== THE "AI IS READING YOUR RESUME" EXPERIENCE =====
+// Students should FEEL the analysis: we extract the real text from their PDF,
+// stream it through a scanner window with staged status messages, and hold
+// the final score until at least MIN_ANALYSIS_MS has passed.
+const MIN_ANALYSIS_MS = 25000;
+
+const SCAN_STAGES = [
+  { at: 0.00, msg: 'Opening your document…' },
+  { at: 0.08, msg: 'Extracting text and layout…' },
+  { at: 0.22, msg: 'Reading work experience…' },
+  { at: 0.38, msg: 'Checking ATS compatibility (Workday, Greenhouse, Lever)…' },
+  { at: 0.52, msg: 'Analyzing impact — looking for numbers and results…' },
+  { at: 0.66, msg: 'Matching keywords against 2026 job-market data…' },
+  { at: 0.80, msg: 'Scoring formatting and clarity…' },
+  { at: 0.92, msg: 'Finalizing your score…' },
+];
+
+let pdfjsPromise = null;
+function loadPdfJs() {
+  if (pdfjsPromise) return pdfjsPromise;
+  pdfjsPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = () => {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      resolve(window.pdfjsLib);
+    };
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return pdfjsPromise;
+}
+
+async function extractPdfText(file) {
+  try {
+    const pdfjs = await loadPdfJs();
+    const buf = await file.arrayBuffer();
+    const doc = await pdfjs.getDocument({ data: buf }).promise;
+    let text = '';
+    const pages = Math.min(doc.numPages, 4);
+    for (let p = 1; p <= pages; p++) {
+      const page = await doc.getPage(p);
+      const content = await page.getTextContent();
+      text += content.items.map(i => i.str).join(' ') + '\n';
+    }
+    return text.replace(/\s{3,}/g, '  ').trim();
+  } catch {
+    return ''; // fall back to generic scan lines
+  }
+}
+
+const GENERIC_SCAN = 'Parsing document structure… reading sections: SUMMARY, EXPERIENCE, EDUCATION, SKILLS… evaluating bullet points for quantified results… cross-checking action verbs… measuring keyword density against target-role benchmarks… validating single-column ATS-safe layout… checking date formats and section headings… assessing readability and length…';
+
+// Words worth highlighting green as the "AI" reads them
+const HL_WORDS = /\b(managed|led|built|created|developed|designed|increased|reduced|improved|launched|delivered|achieved|analy[sz]ed|engineer(?:ed|ing)?|python|java|sql|excel|aws|react|marketing|sales|revenue|customers?|team|project|\d+%|\$[\d,]+|\d{4})\b/gi;
+
+function startScanExperience(file) {
+  const statusEl = el('scanStatus');
+  const fillEl = el('scanFill');
+  const pctEl = el('scanPercent');
+  const textEl = el('scanText');
+  const t0 = Date.now();
+  let stageIdx = -1;
+  let words = GENERIC_SCAN.split(' ');
+  let wordIdx = 0;
+  let shown = [];
+
+  // Swap in the student's real resume text as soon as it's extracted
+  extractPdfText(file).then(t => {
+    if (t && t.length > 80) { words = t.split(/\s+/); wordIdx = 0; shown = []; textEl.innerHTML = ''; }
+  });
+
+  const timer = setInterval(() => {
+    const p = Math.min((Date.now() - t0) / MIN_ANALYSIS_MS, 1);
+
+    // progress bar eases toward 99% and only completes when the result renders
+    const pct = Math.round(Math.min(p, 0.99) * 100);
+    fillEl.style.width = pct + '%';
+    pctEl.textContent = pct + '%';
+
+    // staged status messages
+    for (let i = SCAN_STAGES.length - 1; i >= 0; i--) {
+      if (p >= SCAN_STAGES[i].at) { if (stageIdx !== i) { stageIdx = i; statusEl.textContent = SCAN_STAGES[i].msg; } break; }
+    }
+
+    // stream ~3 words per tick through the scan window
+    for (let n = 0; n < 3 && wordIdx < words.length; n++) {
+      const w = words[wordIdx++];
+      shown.push(HL_WORDS.test(w) ? `<span class="hl">${w}</span>` : w);
+      HL_WORDS.lastIndex = 0;
+    }
+    if (shown.length > 130) shown = shown.slice(shown.length - 130); // keep window scrolling
+    textEl.innerHTML = shown.join(' ');
+    if (wordIdx >= words.length) wordIdx = 0; // loop if resume is short
+
+    if (p >= 1) clearInterval(timer);
+  }, 180);
+
+  return () => { clearInterval(timer); fillEl.style.width = '100%'; pctEl.textContent = '100%'; };
+}
+
 async function scoreResume() {
   if (!selectedFile) return;
   el('scoreUpload').style.display = 'none';
   el('scoreError').style.display = 'none';
   el('scoreLoading').style.display = 'block';
 
+  const finishScan = startScanExperience(selectedFile);
+  const minWait = new Promise(r => setTimeout(r, MIN_ANALYSIS_MS));
+
   try {
-    let result;
     const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
-    if (isLocal) {
-      await new Promise(r => setTimeout(r, 1400)); // simulate latency
-      result = mockScore();
-    } else {
-      const data = await fileToBase64(selectedFile);
-      const res = await fetch('/.netlify/functions/score-resume', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: selectedFile.name, mime: selectedFile.type, data }),
-      });
-      if (!res.ok) throw new Error('score failed ' + res.status);
-      result = await res.json();
-    }
+    const scoring = isLocal
+      ? Promise.resolve(mockScore())
+      : (async () => {
+          const data = await fileToBase64(selectedFile);
+          const res = await fetch('/.netlify/functions/score-resume', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: selectedFile.name, mime: selectedFile.type, data }),
+          });
+          if (!res.ok) throw new Error('score failed ' + res.status);
+          return res.json();
+        })();
+
+    // Real scoring runs in parallel with the scan — result held until 25s pass.
+    const [result] = await Promise.all([scoring, minWait]);
+    finishScan();
+    await new Promise(r => setTimeout(r, 400)); // let the bar hit 100%
     renderResult(result);
   } catch (e) {
+    finishScan();
     el('scoreLoading').style.display = 'none';
     el('scoreUpload').style.display = 'block';
     showError('Sorry — scoring is busy right now. Please try again in a moment.');
