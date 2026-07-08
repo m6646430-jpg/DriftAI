@@ -1129,3 +1129,28 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
 .paper.p-timeline .tl-body { border-left: 2px solid #bfdbfe; padding-left: 10px; position: relative; }
 .paper.p-timeline .tl-body::before { content: ''; position: absolute; left: -5px; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: #2563eb; }
 .paper.p-timeline .tl-body .p-job { margin-top: 0; }
+
+/* ===== FLOATING RESUME DOCUMENTS (score section background) ===== */
+.float-resume { position: absolute; width: 120px; padding: 14px 12px 16px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; backdrop-filter: blur(4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); opacity: 0; }
+.float-resume .frl { display: block; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.28); margin-bottom: 6px; }
+.float-resume .frl.name { height: 8px; width: 55%; background: rgba(167,139,250,0.75); margin-bottom: 9px; }
+.float-resume .frl.gap { height: 2px; background: transparent; }
+.float-resume .frl.w50 { width: 50%; } .float-resume .frl.w60 { width: 60%; }
+.float-resume .frl.w70 { width: 70%; } .float-resume .frl.w80 { width: 80%; } .float-resume .frl.w90 { width: 90%; }
+.fr-check { position: absolute; top: -9px; right: -9px; font-size: 9px; font-weight: 900; padding: 3px 7px; border-radius: 99px; background: linear-gradient(135deg,#059669,#34d399); color: #fff; box-shadow: 0 4px 12px rgba(52,211,153,0.45); }
+
+.fr-1 { left: 5%;  top: 12%; animation: fr-drift 17s ease-in-out infinite; }
+.fr-2 { left: 14%; top: 58%; width: 100px; animation: fr-drift 21s ease-in-out 2s infinite; }
+.fr-3 { right: 6%; top: 16%; animation: fr-drift 19s ease-in-out 1s infinite; }
+.fr-4 { right: 14%; top: 62%; width: 104px; animation: fr-drift 23s ease-in-out 3s infinite; }
+.fr-5 { left: 46%; top: 74%; width: 96px;  animation: fr-drift 25s ease-in-out 4s infinite; }
+
+@keyframes fr-drift {
+  0%   { opacity: 0;   transform: translateY(26px) rotate(-7deg) scale(0.96); }
+  12%  { opacity: 0.85; }
+  50%  { opacity: 0.85; transform: translateY(-18px) rotate(5deg) scale(1.02); }
+  88%  { opacity: 0.85; }
+  100% { opacity: 0;   transform: translateY(26px) rotate(-7deg) scale(0.96); }
+}
+@media (max-width: 900px) { .fr-2, .fr-4, .fr-5 { display: none; } .float-resume { width: 92px; } }
+@media (prefers-reduced-motion: reduce) { .float-resume { animation: none; opacity: 0.5; transform: rotate(-4deg); } }
