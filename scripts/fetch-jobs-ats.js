@@ -158,6 +158,7 @@ async function main() {
           remote: /remote/i.test(j.location) ? 'Remote' : 'On-site / Hybrid',
           sponsor: country === 'US' ? 'H-1B friendly' : country === 'CA' ? 'PGWP · LMIA friendly' : null,
           posted: ago(j.updated),
+          postedAt: j.updated || null, // ISO date for sorting
           url: j.url, // EXACT posting link
           logo: LOGOS[category],
         });

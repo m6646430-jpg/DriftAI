@@ -48,6 +48,11 @@
   <button class="jobboard-filter active" data-country="all">🌐 All Countries</button>
   <button class="jobboard-filter" data-country="US">🇺🇸 USA</button>
   <button class="jobboard-filter" data-country="CA">🇨🇦 Canada</button>
+  <button class="jobboard-filter" data-country="UK">🇬🇧 UK</button>
+  <button class="jobboard-filter" data-country="EU">🇪🇺 Europe</button>
+  <button class="jobboard-filter" data-country="IN">🇮🇳 India</button>
+  <button class="jobboard-filter" data-country="AU">🇦🇺 Australia</button>
+  <button class="jobboard-filter" data-country="NZ">🇳🇿 New Zealand</button>
 </div>
 <div class="jobboard-filters" style="border-bottom:none;padding-top:14px;">
   <button class="jobboard-filter active" data-cat="all">All Roles</button>
@@ -57,7 +62,15 @@
   <button class="jobboard-filter" data-cat="Marketing">Marketing</button>
   <button class="jobboard-filter" data-cat="sponsor">Visa-Sponsor Only</button>
 </div>
-<div id="jobsMeta" style="text-align:center;font-size:13px;font-weight:600;color:rgba(255,255,255,0.45);margin-top:20px;">Loading live roles…</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;">
+  <span style="font-size:12px;color:rgba(255,255,255,0.4);">Sort:</span>
+  <select id="jobSort" class="job-sort">
+    <option value="recent">Most recent first</option>
+    <option value="company">Company (A–Z)</option>
+    <option value="role">Role (A–Z)</option>
+  </select>
+</div>
+<div id="jobsMeta" style="text-align:center;font-size:13px;font-weight:600;color:rgba(255,255,255,0.45);margin-top:14px;">Loading live roles…</div>
 
 <div class="jobboard-list" id="jobboardList"></div>
 

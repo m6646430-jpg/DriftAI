@@ -942,3 +942,8 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
 .member-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
 .member-row span:first-child { color: rgba(255,255,255,0.5); }
 .member-row span:last-child { font-weight: 600; }
+
+/* ===== JOB SORT DROPDOWN ===== */
+.job-sort { padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; font-family: inherit; }
+.job-sort:focus { outline: none; border-color: #a78bfa; }
+.job-sort option { background: #0d0d2b; color: #fff; }

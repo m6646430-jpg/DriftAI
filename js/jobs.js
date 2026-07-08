@@ -7,6 +7,7 @@ const SHOW_JOBS = true;
 let ALL_JOBS = [];
 let activeCountry = 'all';
 let activeCat = 'all';
+let activeSort = 'recent';
 
 function renderComingSoon() {
   const list = document.getElementById('jobboardList');
@@ -55,6 +56,19 @@ function render() {
     return countryOk && catOk;
   });
 
+  // Sort
+  if (activeSort === 'recent') {
+    jobs.sort((a, b) => {
+      const ta = a.postedAt ? Date.parse(a.postedAt) : 0;
+      const tb = b.postedAt ? Date.parse(b.postedAt) : 0;
+      return tb - ta; // newest first
+    });
+  } else if (activeSort === 'company') {
+    jobs.sort((a, b) => a.company.localeCompare(b.company));
+  } else if (activeSort === 'role') {
+    jobs.sort((a, b) => a.role.localeCompare(b.role));
+  }
+
   if (!jobs.length) {
     list.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.4);padding:40px;">No roles match this filter yet — check back tomorrow, we update daily.</div>`;
     return;
@@ -101,5 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
     });
   });
+  const sortEl = document.getElementById('jobSort');
+  if (sortEl) sortEl.addEventListener('change', () => { activeSort = sortEl.value; render(); });
   loadJobs();
 });
