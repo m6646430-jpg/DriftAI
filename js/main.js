@@ -23,6 +23,30 @@ document.querySelectorAll('.payment-link').forEach(el => {
   el.rel = 'noopener';
 });
 
+// ===== GEO-AWARE PRICING (India → show ₹) =====
+// We charge in USD (Stripe links are USD), but for visitors in India we lead
+// with the rupee price so it feels local, and clearly note it's billed in USD.
+// Detection uses the browser timezone — no API, no key, no network call.
+(function localizePrices() {
+  let inIndia = false;
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    inIndia = /Kolkata|Calcutta/i.test(tz);
+  } catch (e) { /* older browser — fall back to USD */ }
+
+  document.querySelectorAll('.plan-price[data-inr]').forEach(priceEl => {
+    const note = priceEl.parentElement.querySelector('.plan-inr');
+    if (inIndia) {
+      const inr = priceEl.dataset.inr, usd = priceEl.dataset.usd || '';
+      priceEl.innerHTML = '₹' + inr + '<span> INR</span>';
+      if (note) note.textContent = 'Billed as $' + usd + ' USD at checkout';
+    } else if (note) {
+      // Non-India visitors: keep USD only, hide the rupee line.
+      note.style.display = 'none';
+    }
+  });
+})();
+
 // ===== MOBILE MENU =====
 function toggleMenu() {
   document.getElementById('mobileMenu').classList.toggle('open');
