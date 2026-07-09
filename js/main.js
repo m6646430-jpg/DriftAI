@@ -42,8 +42,9 @@ document.querySelectorAll('.payment-link').forEach(el => {
     const note = priceEl.parentElement.querySelector('.plan-inr');
     if (inIndia) {
       const inr = priceEl.dataset.inr, usd = priceEl.dataset.usd || '';
-      priceEl.innerHTML = '₹' + inr + '<span> INR</span>';
-      if (note) note.textContent = 'Billed as $' + usd + ' USD at checkout';
+      const unit = priceEl.dataset.unit || ''; // e.g. " / mo" for monthly plans
+      priceEl.innerHTML = '₹' + inr + '<span> INR' + unit + '</span>';
+      if (note) note.textContent = 'Billed as $' + usd + ' USD' + unit + ' at checkout';
     } else if (note) {
       // Non-India visitors: keep USD only, hide the rupee line.
       note.style.display = 'none';
