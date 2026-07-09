@@ -368,6 +368,8 @@ body::after {
 
 /* ===== PRICING ===== */
 .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 960px; margin: 60px auto 0; }
+.pricing-grid.grid-4 { grid-template-columns: repeat(4, 1fr); max-width: 1180px; gap: 16px; }
+@media (max-width: 1040px) { .pricing-grid.grid-4 { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
 .pricing-card {
   border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 36px;
   position: relative; transition: all 0.3s; background: rgba(255,255,255,0.03);
