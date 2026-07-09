@@ -5,17 +5,24 @@
 
 const MODEL = 'gemini-2.5-flash';
 
-function buildPrompt(role, company) {
+function buildPrompt(role, company, jd) {
+  const jdBlock = jd
+    ? `\n\nHere is the ACTUAL job description for this role. Tailor specifically to what THIS posting
+asks for — mirror its responsibilities, required skills, and language:\n"""\n${jd}\n"""`
+    : '';
   return `You are an expert resume writer and ATS specialist. The candidate is applying for the
 role "${role}" at "${company}". Using ONLY their real experience from the attached resume
-(never invent jobs, employers, or facts), tailor their resume to this specific role.
+(never invent jobs, employers, or facts), tailor their resume to this specific role.${jdBlock}
+
+Match the candidate's real background to this job. If their experience is in a different field
+than the job, be honest about that in gap_note rather than pretending they are a perfect fit.
 
 Return ONLY JSON in exactly this shape:
 {
-  "summary": "<a punchy 2-3 sentence professional summary tailored to this exact role>",
-  "bullets": ["<4-6 rewritten resume bullet points that strengthen their fit for THIS role, quantified where their resume supports it>"],
-  "keywords": ["<6-10 role-relevant skills/keywords this job likely screens for that they should make sure appear>"],
-  "gap_note": "<one honest sentence on the biggest thing to improve for this role>"
+  "summary": "<a punchy 2-3 sentence professional summary tailored to this exact role and its job description>",
+  "bullets": ["<4-6 rewritten resume bullet points from their REAL experience, reframed to match what this posting asks for, quantified where their resume supports it>"],
+  "keywords": ["<6-10 skills/keywords THIS job description screens for that they should make sure appear>"],
+  "gap_note": "<one honest sentence on the biggest gap between their resume and what this posting requires>"
 }
 Keep bullets concrete and based on their actual background. Output ONLY the JSON.`;
 }
@@ -27,7 +34,7 @@ export default async (req) => {
 
   let payload;
   try { payload = await req.json(); } catch { return Response.json({ error: 'bad request' }, { status: 400 }); }
-  const { data, mime, role, company } = payload || {};
+  const { data, mime, role, company, jd } = payload || {};
   if (!data || mime !== 'application/pdf') return Response.json({ error: 'a PDF is required' }, { status: 400 });
   if (data.length > 7_000_000) return Response.json({ error: 'file too large' }, { status: 413 });
 
@@ -39,7 +46,7 @@ export default async (req) => {
       body: JSON.stringify({
         contents: [{ parts: [
           { inlineData: { mimeType: 'application/pdf', data } },
-          { text: buildPrompt(String(role || 'this role').slice(0, 120), String(company || 'the company').slice(0, 120)) },
+          { text: buildPrompt(String(role || 'this role').slice(0, 120), String(company || 'the company').slice(0, 120), String(jd || '').slice(0, 4000)) },
         ]}],
         generationConfig: { temperature: 0.3, responseMimeType: 'application/json' },
       }),

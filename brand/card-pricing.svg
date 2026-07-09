@@ -1,0 +1,61 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#161b36"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.30" r="0.7">
+      <stop offset="0" stop-color="#6d8bff" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#6d8bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="330" r="520" fill="url(#glow)"/>
+  
+  <g transform="translate(80 90)">
+    <rect x="0" y="-34" width="60" height="60" rx="16" fill="url(#accent)"/>
+    <text x="30" y="12" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800" fill="#0b1020">D</text>
+    <text x="82" y="10" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800">
+      <tspan fill="#ffffff">Drift</tspan><tspan fill="url(#accent)">AI</tspan>
+    </text>
+  </g>
+  
+  <text x="80" y="250" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="900" fill="#ffffff">Our Pricing <tspan fill="url(#accent)">(USD)</tspan></text>
+  
+    <g transform="translate(80 320)">
+      <rect x="0" y="0" width="920" height="96" rx="20" fill="#ffffff" opacity="0.05"/>
+      <text x="34" y="60" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" fill="#eef2ff">Resume Only</text>
+      <text x="886" y="60" text-anchor="end" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="800" fill="url(#accent)">$79.99</text>
+    </g>
+  
+    <g transform="translate(80 432)">
+      <rect x="0" y="0" width="920" height="96" rx="20" fill="#ffffff" opacity="0.05"/>
+      <text x="34" y="60" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" fill="#eef2ff">Resume + Cover Letter</text>
+      <text x="886" y="60" text-anchor="end" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="800" fill="url(#accent)">$99.99</text>
+    </g>
+  
+    <g transform="translate(80 544)">
+      <rect x="0" y="0" width="920" height="96" rx="20" fill="#ffffff" opacity="0.05"/>
+      <text x="34" y="60" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" fill="#eef2ff">Complete (with LinkedIn)</text>
+      <text x="886" y="60" text-anchor="end" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="800" fill="url(#accent)">$149.99</text>
+    </g>
+  
+    <g transform="translate(80 656)">
+      <rect x="0" y="0" width="920" height="96" rx="20" fill="#ffffff" opacity="0.05"/>
+      <text x="34" y="60" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" fill="#eef2ff">Let Us Apply · 30/day</text>
+      <text x="886" y="60" text-anchor="end" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="800" fill="url(#accent)">$150/mo</text>
+    </g>
+  
+    <g transform="translate(80 768)">
+      <rect x="0" y="0" width="920" height="96" rx="20" fill="#ffffff" opacity="0.05"/>
+      <text x="34" y="60" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" fill="#eef2ff">Community</text>
+      <text x="886" y="60" text-anchor="end" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="800" fill="url(#accent)">$9.99/mo</text>
+    </g>
+  <text x="540" y="960" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="600" fill="rgba(255,255,255,0.55)">driftai.info</text>
+
+</svg>

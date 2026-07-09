@@ -9,8 +9,9 @@
   const modal = $('tailorModal');
   if (!modal) return;
 
-  function open(role, company) {
-    current = { role, company };
+  function open(job) {
+    const role = job.role, company = job.company;
+    current = { role, company, jd: job.jd || '', url: job.url || '', source: job.source || '' };
     selected = null;
     $('tailorTarget').textContent = role + ' · ' + company;
     $('tailorTarget2').textContent = role + ' · ' + company;
@@ -31,12 +32,12 @@
     const btn = e.target.closest('.jb-tailor');
     if (!btn) return;
     const job = (typeof ALL_JOBS !== 'undefined' ? ALL_JOBS : []).find(j => j.id === btn.dataset.jobid);
-    if (job) open(job.role, job.company);
+    if (job) open(job);
   });
 
   $('tailorClose').addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  $('tailorAgain') && $('tailorAgain').addEventListener('click', () => open(current.role, current.company));
+  $('tailorAgain') && $('tailorAgain').addEventListener('click', () => open(current));
 
   // File selection
   const drop = $('tailorDrop'), input = $('tailorFile');
@@ -74,7 +75,7 @@
         const data = await toBase64(selected);
         const res = await fetch('/.netlify/functions/tailor-resume', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data, mime: selected.type, role: current.role, company: current.company }),
+          body: JSON.stringify({ data, mime: selected.type, role: current.role, company: current.company, jd: current.jd }),
         });
         if (!res.ok) throw new Error('tailor failed ' + res.status);
         result = await res.json();
@@ -98,17 +99,30 @@
 
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
+  // Local-only placeholder. The REAL tailoring (which reads your uploaded PDF and
+  // this job's description via Gemini) runs on the deployed site, not localhost.
+  // We derive keywords from the actual JD so it's obvious the JD is flowing through.
   function mock() {
+    const jd = (current.jd || '').toLowerCase();
+    const kwPool = ['leadership', 'strategy', 'analytics', 'stakeholder', 'budget', 'campaign',
+      'growth', 'roadmap', 'sql', 'python', 'kubernetes', 'api', 'cloud', 'security', 'design',
+      'marketing', 'brand', 'content', 'seo', 'cross-functional', 'metrics', 'b2b', 'saas'];
+    let kws = kwPool.filter(k => jd.includes(k)).map(k => k[0].toUpperCase() + k.slice(1));
+    if (kws.length < 5) kws = kws.concat(['Communication', 'Ownership', 'Data-driven', 'Collaboration', 'Execution']);
+    kws = [...new Set(kws)].slice(0, 8);
     return {
-      summary: 'Results-driven software engineer with 4+ years building scalable web platforms, now targeting a ' + current.role + ' role at ' + current.company + '. Proven record of shipping features to millions of users and cutting infrastructure costs.',
+      _demo: true,
+      summary: '[LOCAL DEMO — the live site uses AI on your real resume] Professional targeting the ' +
+        current.role + ' role at ' + current.company + ', with experience mapped to this posting' +
+        (jd ? ' (job description was received: ' + (current.jd || '').length + ' chars).' : '.'),
       bullets: [
-        'Rebuilt core service that reduced p99 latency by 43%, directly relevant to ' + current.company + "'s scale.",
-        'Led migration of 14 microservices to Kubernetes, cutting infra spend $210K/year.',
-        'Partnered cross-functionally with product and design to ship 3 major releases on time.',
-        'Mentored 3 engineers, improving team delivery velocity by 20%.',
+        'Reframed a real achievement to match "' + current.role + '" responsibilities from the JD.',
+        'Highlighted results relevant to ' + current.company + ', quantified where the resume supports it.',
+        'Surfaced transferable skills the posting asks for.',
+        'Aligned wording to the keywords this job screens for.',
       ],
-      keywords: ['Distributed systems', 'Kubernetes', 'CI/CD', 'API design', 'Cloud (AWS)', 'System design', 'Mentorship'],
-      gap_note: 'Add one metric-driven bullet that mirrors this job\'s core responsibility to stand out.',
+      keywords: kws,
+      gap_note: 'This is a local preview. Deploy the site to see the AI tailor your actual uploaded resume to this job description.',
     };
   }
 })();

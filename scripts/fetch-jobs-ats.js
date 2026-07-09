@@ -140,12 +140,29 @@ function ago(iso) {
   return `Posted ${d} days ago`;
 }
 
+// Turn ATS job-description HTML (sometimes HTML-entity-encoded, as Greenhouse
+// returns) into clean plain text, trimmed to a size that's useful for tailoring
+// without bloating jobs.json. This is the text Gemini reads to match the JD.
+const JD_MAX = 1600;
+function plainJD(raw) {
+  if (!raw) return '';
+  let s = String(raw)
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+    .replace(/&#39;/g, "'").replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&nbsp;/g, ' ');
+  s = s.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ')
+       .replace(/<li[^>]*>/gi, '• ').replace(/<\/(p|div|li|h[1-6]|ul|ol)>/gi, '\n')
+       .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, ' ');
+  s = s.replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').trim();
+  return s.slice(0, JD_MAX);
+}
+
 async function fetchGreenhouse(co) {
-  const r = await fetch(`https://boards-api.greenhouse.io/v1/boards/${co.slug}/jobs`);
+  const r = await fetch(`https://boards-api.greenhouse.io/v1/boards/${co.slug}/jobs?content=true`);
   if (!r.ok) throw new Error(`${co.slug} ${r.status}`);
   const d = await r.json();
   return (d.jobs || []).map(j => ({
     title: j.title, location: j.location?.name || '', url: j.absolute_url, updated: j.updated_at,
+    jd: plainJD(j.content),
   }));
 }
 async function fetchLever(co) {
@@ -154,6 +171,7 @@ async function fetchLever(co) {
   const d = await r.json();
   return (d || []).map(j => ({
     title: j.text, location: j.categories?.location || '', url: j.hostedUrl, updated: j.createdAt ? new Date(j.createdAt).toISOString() : null,
+    jd: plainJD(j.descriptionPlain || j.description),
   }));
 }
 async function fetchAshby(co) {
@@ -162,6 +180,7 @@ async function fetchAshby(co) {
   const d = await r.json();
   return (d.jobs || []).map(j => ({
     title: j.title, location: j.location || '', url: j.jobUrl || j.applyUrl, updated: j.publishedAt || null,
+    jd: plainJD(j.descriptionPlain || j.descriptionHtml),
   }));
 }
 const FETCHERS = { greenhouse: fetchGreenhouse, lever: fetchLever, ashby: fetchAshby };
@@ -202,6 +221,7 @@ async function main() {
           url: j.url, // EXACT posting link
           logo: LOGOS[category],
           source: co.ats, // greenhouse / lever / ashby
+          jd: j.jd || '', // trimmed plain-text job description, for AI tailoring
         });
         kept++;
         if (kept >= 12) break; // cap per company for variety

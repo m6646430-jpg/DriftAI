@@ -1,0 +1,41 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#161b36"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.30" r="0.7">
+      <stop offset="0" stop-color="#6d8bff" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#6d8bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="330" r="520" fill="url(#glow)"/>
+  
+  <g transform="translate(80 90)">
+    <rect x="0" y="-34" width="60" height="60" rx="16" fill="url(#accent)"/>
+    <text x="30" y="12" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800" fill="#0b1020">D</text>
+    <text x="82" y="10" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800">
+      <tspan fill="#ffffff">Drift</tspan><tspan fill="url(#accent)">AI</tspan>
+    </text>
+  </g>
+  
+  <text x="80" y="250" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="900" fill="#ffffff">Let Us <tspan fill="url(#accent)">Apply</tspan></text>
+  <text x="80" y="330" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="600" fill="rgba(255,255,255,0.6)">Done-for-you job applications</text>
+  <g font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="600" fill="#dbe2ff">
+    <text x="80" y="470">🎯 Tailored resume + cover letter per role</text>
+    <text x="80" y="560">📤 Up to 30 applications / day</text>
+    <text x="80" y="650">📞 1 strategy call included</text>
+    <text x="80" y="740">🧑‍💼 You just show up to interviews</text>
+  </g>
+  <g transform="translate(80 850)">
+    <rect x="0" y="0" width="920" height="110" rx="24" fill="url(#accent)"/>
+    <text x="460" y="72" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="800" fill="#0b1020">$150 / month</text>
+  </g>
+
+</svg>

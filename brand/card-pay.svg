@@ -1,0 +1,39 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#161b36"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.30" r="0.7">
+      <stop offset="0" stop-color="#6d8bff" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#6d8bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="330" r="520" fill="url(#glow)"/>
+  
+  <g transform="translate(80 90)">
+    <rect x="0" y="-34" width="60" height="60" rx="16" fill="url(#accent)"/>
+    <text x="30" y="12" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800" fill="#0b1020">D</text>
+    <text x="82" y="10" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="800">
+      <tspan fill="#ffffff">Drift</tspan><tspan fill="url(#accent)">AI</tspan>
+    </text>
+  </g>
+  
+  <text x="80" y="250" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="900" fill="#ffffff">Secure <tspan fill="url(#accent)">Payments</tspan></text>
+  <g transform="translate(540 560)">
+    <rect x="-260" y="-150" width="520" height="300" rx="40" fill="#ffffff" opacity="0.06"/>
+    <text y="10" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="130">🔒</text>
+  </g>
+  <g font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="600" fill="#dbe2ff">
+    <text x="80" y="830">✅ Powered by Stripe</text>
+    <text x="80" y="910">✅ All prices in USD</text>
+    <text x="80" y="990">✅ Your card never touches our servers</text>
+  </g>
+
+</svg>

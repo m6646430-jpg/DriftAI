@@ -1,0 +1,61 @@
+<svg width="640" height="640" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#151a34"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#6d8bff" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#6d8bff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Full-bleed background (safe for circular crop) -->
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <circle cx="320" cy="300" r="300" fill="url(#glow)"/>
+
+  <!-- Subtle grid dots -->
+  <g fill="#ffffff" opacity="0.05">
+    <circle cx="120" cy="140" r="3"/><circle cx="200" cy="120" r="3"/>
+    <circle cx="500" cy="150" r="3"/><circle cx="540" cy="230" r="3"/>
+    <circle cx="110" cy="470" r="3"/><circle cx="520" cy="480" r="3"/>
+  </g>
+
+  <!-- Monogram: stylized D with a resume "lines" cut, in the brand gradient -->
+  <g transform="translate(320 300)">
+    <!-- Rounded gradient tile behind the D -->
+    <rect x="-150" y="-150" width="300" height="300" rx="70" fill="url(#accent)"/>
+    <!-- The D letterform, knocked out in dark -->
+    <path d="M -66 -92
+             L -66 92
+             L 8 92
+             C 78 92 108 52 108 0
+             C 108 -52 78 -92 8 -92
+             Z
+             M -18 -50
+             L 6 -50
+             C 44 -50 60 -28 60 0
+             C 60 28 44 50 6 50
+             L -18 50
+             Z"
+          fill="#0b1020"/>
+    <!-- Resume "text lines" inside the counter, hinting at the product -->
+    <g fill="url(#accent)">
+      <rect x="-6" y="-34" width="52" height="9" rx="4.5"/>
+      <rect x="-6" y="-14" width="40" height="9" rx="4.5"/>
+      <rect x="-6" y="6"  width="48" height="9" rx="4.5"/>
+      <rect x="-6" y="26" width="30" height="9" rx="4.5"/>
+    </g>
+  </g>
+
+  <!-- Wordmark under the mark (still inside the circle safe-zone) -->
+  <text x="320" y="540" text-anchor="middle"
+        font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
+        font-size="62" font-weight="800" letter-spacing="1">
+    <tspan fill="#ffffff">Drift</tspan><tspan fill="url(#accent)">AI</tspan>
+  </text>
+</svg>
