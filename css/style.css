@@ -370,6 +370,9 @@ body::after {
 .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 960px; margin: 60px auto 0; }
 .pricing-grid.grid-4 { grid-template-columns: repeat(4, 1fr); max-width: 1180px; gap: 16px; }
 @media (max-width: 1040px) { .pricing-grid.grid-4 { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
+.pricing-grid.grid-2 { grid-template-columns: repeat(2, 1fr); max-width: 660px; }
+.pricing-group-label { text-align: center; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #a78bfa; margin: 56px auto 0; }
+.pricing-group-sub { text-align: center; font-size: 13px; color: rgba(255,255,255,0.4); margin: 6px auto 0; max-width: 460px; }
 .pricing-card {
   border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 36px;
   position: relative; transition: all 0.3s; background: rgba(255,255,255,0.03);
@@ -738,7 +741,7 @@ body::after {
 }
 @media (max-width: 700px) {
   .services-grid { grid-template-columns: 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 48px auto 0; }
+  .pricing-grid, .pricing-grid.grid-2, .pricing-grid.grid-4 { grid-template-columns: 1fr; max-width: 420px; margin: 48px auto 0; }
   .testimonials-grid { grid-template-columns: 1fr; max-width: 480px; margin: 48px auto 0; }
   .form-row, .form-grid { grid-template-columns: 1fr; }
   .hero-stats { flex-direction: column; gap: 0; }
