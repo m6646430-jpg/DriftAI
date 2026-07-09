@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complete Your Order — DriftAI</title>
+  <meta name="description" content="Thanks for your order! Send us your details and resume so we can get started." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Drift<span>AI</span></a>
+    <ul class="nav-links">
+      <li><a href="jobs.html">Job Board</a></li>
+      <li><a href="community.html">Community</a></li>
+      <li><a href="resume-services.html">Resume Services</a></li>
+      <li><a href="jobhunt.html">Job Hunt</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/16474953399" target="_blank" rel="noopener" class="nav-phone"><span class="np-dot"></span>💬 <span class="np-num">+1 647-495-3399</span></a>
+      <a href="index.html" class="btn btn-outline">← Home</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="jobs.html">Job Board</a>
+    <a href="community.html">Community</a>
+    <a href="resume-services.html">Resume Services</a>
+    <a href="jobhunt.html">Job Hunt</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="section-label" style="justify-content:center;">✅ Order Received</div>
+  <h1>Almost Done — <span class="gradient-text">Send Your Details.</span></h1>
+  <p>Thanks for your order! Fill this in so our team can get started right away. You'll hear from us within 24 hours.</p>
+</div>
+
+<section class="section contact" style="padding-top:10px;">
+  <div class="container" style="max-width:640px;">
+    <div class="contact-card reveal">
+      <form class="contact-form" name="order-details" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" onsubmit="submitOrder(event)">
+        <input type="hidden" name="form-name" value="order-details" />
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Your Full Name" required />
+          <input type="email" name="email" placeholder="Your Email Address" required />
+        </div>
+
+        <div class="form-row">
+          <input type="tel" name="phone" placeholder="Phone / WhatsApp (optional)" />
+          <select name="service" id="serviceField" required>
+            <option value="">Which service did you order?</option>
+            <option>Student / Entry Resume — $29.99</option>
+            <option>Mid-Level Resume — $39.99</option>
+            <option>Resume Only — $79.99</option>
+            <option>Resume + Cover Letter — $99.99</option>
+            <option>Complete Package — $149.99</option>
+            <option>Job Hunt Program — $150/mo</option>
+            <option>Community Membership — $9.99/mo</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <input type="text" name="target_role" placeholder="Target Job Title (e.g. Data Analyst)" required />
+          <select name="target_country" required>
+            <option value="">Target Country</option>
+            <option>🇺🇸 USA</option>
+            <option>🇨🇦 Canada</option>
+            <option>🇬🇧 UK</option>
+            <option>🇪🇺 Europe</option>
+            <option>🇮🇳 India</option>
+            <option>🇦🇺 Australia</option>
+            <option>🇳🇿 New Zealand</option>
+          </select>
+        </div>
+
+        <label class="order-file-label">
+          <span id="fileText">📎 Upload your current resume (PDF or Word) — optional but recommended</span>
+          <input type="file" name="resume" accept=".pdf,.doc,.docx" onchange="showFile(this)" />
+        </label>
+
+        <textarea name="notes" placeholder="Anything we should know? Target companies, seniority, specific roles, deadlines…" rows="4"></textarea>
+
+        <button type="submit" class="btn btn-primary btn-lg w-full">Submit My Details →</button>
+        <p style="font-size:12px;color:rgba(255,255,255,0.4);text-align:center;margin-top:14px;">
+          Haven't paid yet? <a href="resume-services.html" style="color:#a78bfa;">Pick your package first →</a>
+        </p>
+      </form>
+      <div id="orderSuccess" class="form-success" style="display:none;">
+        ✅ Got it! Your details are in. Our team will email you within 24 hours to get started. Need anything urgent? <a href="https://wa.me/16474953399" style="color:#34d399;font-weight:700;" target="_blank" rel="noopener">WhatsApp us →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-bottom">
+    <p>© 2026 DriftAI · All rights reserved</p>
+    <p><a href="terms.html" style="color:#a78bfa;">Terms</a> · <a href="privacy.html" style="color:#a78bfa;">Privacy</a> · <a href="refund.html" style="color:#a78bfa;">Refunds</a> · <a href="reviews.html" style="color:#a78bfa;">Reviews</a></p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  // Pre-select the service if Stripe redirected here with ?plan=<key>.
+  (function () {
+    const map = {
+      resume_entry: 'Student / Entry Resume — $29.99',
+      resume_mid: 'Mid-Level Resume — $39.99',
+      resume_only: 'Resume Only — $79.99',
+      resume_rewrite: 'Resume + Cover Letter — $99.99',
+      resume_complete: 'Complete Package — $149.99',
+      jobhunt: 'Job Hunt Program — $150/mo',
+      community: 'Community Membership — $9.99/mo',
+    };
+    const plan = new URLSearchParams(location.search).get('plan');
+    const label = map[plan];
+    if (!label) return;
+    const sel = document.getElementById('serviceField');
+    [...sel.options].forEach(o => { if (o.value === label) sel.value = label; });
+  })();
+
+  function showFile(input) {
+    const t = document.getElementById('fileText');
+    if (input.files && input.files[0]) t.textContent = '✓ ' + input.files[0].name;
+  }
+
+  // Submit to Netlify Forms as multipart (so the resume file is included).
+  function submitOrder(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending…'; btn.disabled = true;
+    fetch('/', { method: 'POST', body: new FormData(form) })
+      .then(res => {
+        if (!res.ok) throw new Error('submit failed ' + res.status);
+        form.style.display = 'none';
+        document.getElementById('orderSuccess').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      })
+      .catch(() => {
+        btn.textContent = 'Submit My Details →'; btn.disabled = false;
+        alert('Sorry, something went wrong. Please try again, or email your details to support@driftai.info');
+      });
+  }
+</script>
+</body>
+</html>
