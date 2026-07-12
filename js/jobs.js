@@ -94,33 +94,44 @@ function render() {
   const FLAGS = { US: '🇺🇸', CA: '🇨🇦', UK: '🇬🇧', EU: '🇪🇺', IN: '🇮🇳', AU: '🇦🇺', NZ: '🇳🇿' };
   list.innerHTML = pageJobs.map(j => {
     const flag = FLAGS[j.country] || '🌐';
-    const letter = (j.company || '?').trim().charAt(0).toUpperCase();
+    const letter = esc((j.company || '?').trim().charAt(0).toUpperCase());
     const level = levelOf(j.role);
     const isRemote = /remote/i.test(j.remote || '');
     const tags = [];
-    if (j.sponsor) tags.push(`<span class="jbc-tag visa">🛂 ${j.sponsor}</span>`);
-    if (j.salary) tags.push(`<span class="jbc-tag pay">${j.salary}</span>`);
+    if (j.sponsor) tags.push(`<span class="jbc-tag visa">🛂 ${esc(j.sponsor)}</span>`);
+    if (j.salary) tags.push(`<span class="jbc-tag pay">${esc(j.salary)}</span>`);
     if (isRemote) tags.push(`<span class="jbc-tag remote">🌐 Remote</span>`);
-    if (level) tags.push(`<span class="jbc-tag">${level}</span>`);
-    if (j.source) tags.push(`<span class="jbc-tag">${j.source}</span>`);
+    if (level) tags.push(`<span class="jbc-tag">${esc(level)}</span>`);
+    if (j.source) tags.push(`<span class="jbc-tag">${esc(j.source)}</span>`);
     return `
     <div class="jobboard-card">
       <div class="jbc-head">
         <div class="jbc-logo">${letter}</div>
         <div class="jbc-co">
-          <div class="jbc-company">${j.company}</div>
-          <div class="jbc-posted">${j.posted || 'Recently'} · ${flag} ${j.country}</div>
+          <div class="jbc-company">${esc(j.company)}</div>
+          <div class="jbc-posted">${esc(j.posted || 'Recently')} · ${flag} ${esc(j.country)}</div>
         </div>
       </div>
-      <div class="jbc-title">${j.role}</div>
-      <div class="jbc-loc">📍 ${(j.location || '—').split(/\s*[;/]\s*/)[0].slice(0, 40)}</div>
+      <div class="jbc-title">${esc(j.role)}</div>
+      <div class="jbc-loc">📍 ${esc((j.location || '—').split(/\s*[;/]\s*/)[0].slice(0, 40))}</div>
       <div class="jbc-tags">${tags.join('')}</div>
       <div class="jbc-actions">
-        <a href="${j.url || 'jobhunt.html'}" class="jbc-apply" target="_blank" rel="noopener">↗ Apply</a>
-        <button class="jbc-tailor jb-tailor" data-jobid="${j.id}">✨ Tailor Resume</button>
+        <a href="${safeUrl(j.url)}" class="jbc-apply" target="_blank" rel="noopener">↗ Apply</a>
+        <button class="jbc-tailor jb-tailor" data-jobid="${esc(j.id)}">✨ Tailor Resume</button>
       </div>
     </div>`;
   }).join('');
+}
+
+// Escape everything that comes from external ATS feeds before it hits
+// innerHTML — a compromised feed must never be able to run script here.
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Only allow real http(s) links — blocks javascript:/data: URLs from feeds.
+function safeUrl(u) {
+  return /^https?:\/\//i.test(u || '') ? esc(u) : 'jobhunt.html';
 }
 
 // Render the "Showing X–Y of Z · Page N of M · Prev/Next" bars (top + bottom).

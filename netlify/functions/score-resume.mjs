@@ -26,9 +26,18 @@ Scoring guidance:
 - Formatting & Clarity: consistent, clean, scannable, appropriate length.
 Each tip must be specific and actionable, max 22 words. Output ONLY the JSON, nothing else.`;
 
+// Only our own pages may call this — blocks scripts hammering the endpoint
+// to burn the Gemini quota. (Origin can be spoofed by non-browser clients,
+// but this stops the easy drive-by abuse; browsers always send it honestly.)
+const ALLOWED_ORIGINS = /^https:\/\/(www\.)?driftai\.info$|^https:\/\/silver-macaron-6cb9ba\.netlify\.app$|^http:\/\/localhost(:\d+)?$/;
+
 export default async (req) => {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
+  }
+  const origin = req.headers.get('origin') || '';
+  if (!ALLOWED_ORIGINS.test(origin)) {
+    return Response.json({ error: 'forbidden' }, { status: 403 });
   }
 
   const key = process.env.GEMINI_API_KEY;

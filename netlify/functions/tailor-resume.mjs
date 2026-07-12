@@ -27,8 +27,14 @@ Return ONLY JSON in exactly this shape:
 Keep bullets concrete and based on their actual background. Output ONLY the JSON.`;
 }
 
+// Only our own pages may call this — blocks scripts hammering the endpoint
+// to burn the Gemini quota (see score-resume.mjs for details).
+const ALLOWED_ORIGINS = /^https:\/\/(www\.)?driftai\.info$|^https:\/\/silver-macaron-6cb9ba\.netlify\.app$|^http:\/\/localhost(:\d+)?$/;
+
 export default async (req) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+  const origin = req.headers.get('origin') || '';
+  if (!ALLOWED_ORIGINS.test(origin)) return Response.json({ error: 'forbidden' }, { status: 403 });
   const key = process.env.GEMINI_API_KEY;
   if (!key) return Response.json({ error: 'not configured' }, { status: 500 });
 

@@ -134,10 +134,12 @@ function startScanExperience(file) {
       if (p >= SCAN_STAGES[i].at) { if (stageIdx !== i) { stageIdx = i; statusEl.textContent = SCAN_STAGES[i].msg; } break; }
     }
 
-    // stream ~3 words per tick through the scan window
+    // stream ~3 words per tick through the scan window (escaped — PDF text
+    // must render as text, never as markup)
     for (let n = 0; n < 3 && wordIdx < words.length; n++) {
-      const w = words[wordIdx++];
-      shown.push(HL_WORDS.test(w) ? `<span class="hl">${w}</span>` : w);
+      const raw = words[wordIdx++];
+      const w = String(raw).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      shown.push(HL_WORDS.test(raw) ? `<span class="hl">${w}</span>` : w);
       HL_WORDS.lastIndex = 0;
     }
     if (shown.length > 130) shown = shown.slice(shown.length - 130); // keep window scrolling
@@ -208,13 +210,19 @@ function renderResult(r) {
   }, 60);
   animateNumber(el('scoreValue'), overall, 1400);
 
-  // breakdown
+  // breakdown — escape AI output; a crafted PDF could prompt-inject HTML
+  // into the model's response, and that must never run as script here.
+  const escS = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const cats = Array.isArray(r.categories) ? r.categories : [];
-  el('scoreBreakdown').innerHTML = cats.map(c => `
+  el('scoreBreakdown').innerHTML = cats.map(c => {
+    const score = Math.max(0, Math.min(100, Math.round(Number(c.score) || 0)));
+    return `
     <div class="score-cat">
-      <div class="score-cat-top"><span class="score-cat-name">${c.name}</span><span class="score-cat-val">${c.score}/100</span></div>
-      <div class="score-cat-bar"><div class="score-cat-fill" data-w="${c.score}"></div></div>
-    </div>`).join('');
+      <div class="score-cat-top"><span class="score-cat-name">${escS(c.name)}</span><span class="score-cat-val">${score}/100</span></div>
+      <div class="score-cat-bar"><div class="score-cat-fill" data-w="${score}"></div></div>
+    </div>`;
+  }).join('');
   setTimeout(() => {
     document.querySelectorAll('.score-cat-fill').forEach(f => { f.style.width = f.dataset.w + '%'; });
   }, 60);
@@ -222,7 +230,7 @@ function renderResult(r) {
   // tips
   const tips = Array.isArray(r.tips) ? r.tips : [];
   el('scoreTips').innerHTML = tips.length
-    ? `<h4>Top fixes to raise your score</h4><ul>${tips.map(t => `<li>${t}</li>`).join('')}</ul>`
+    ? `<h4>Top fixes to raise your score</h4><ul>${tips.map(t => `<li>${escS(t)}</li>`).join('')}</ul>`
     : '';
 
   // WhatsApp CTA
