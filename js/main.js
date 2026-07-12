@@ -14,10 +14,8 @@ const STRIPE_LINKS = {
   resume_only: 'https://buy.stripe.com/6oU8wPaZWfgla8Y1K54wM02',
   resume_rewrite: 'https://buy.stripe.com/7sY4gz5FC6JPbd2ewR4wM03',
   resume_complete: 'https://buy.stripe.com/6oUdR91pmechgxm88t4wM04',
-  // TODO: create one-time Stripe Payment Links for these budget tiers and
-  // paste the URLs here (replace the empty strings below).
-  resume_entry: '', // $29.99 Student / Entry-Level
-  resume_mid: '',   // $39.99 Mid-Level
+  resume_entry: 'https://buy.stripe.com/6oU00jfgcech5SI4Wh4wM05', // $29.99 Student / Entry-Level
+  resume_mid: 'https://buy.stripe.com/7sY00jaZW1pv3KAdsN4wM06',   // $39.99 Mid-Level
 };
 
 document.querySelectorAll('.payment-link').forEach(el => {
