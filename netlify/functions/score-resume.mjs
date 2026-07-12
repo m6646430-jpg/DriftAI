@@ -24,7 +24,10 @@ Scoring guidance:
 - Impact & Metrics: are achievements quantified with numbers/results, not just duties?
 - Keyword Match: does it use strong role-relevant skills and action verbs?
 - Formatting & Clarity: consistent, clean, scannable, appropriate length.
-Each tip must be specific and actionable, max 22 words. Output ONLY the JSON, nothing else.`;
+Each tip must be specific and actionable, max 22 words.
+IMPORTANT — be deterministic: apply this rubric strictly and consistently so the SAME
+resume always receives the SAME scores. Do not vary scores between runs. Prefer round,
+stable numbers. Output ONLY the JSON, nothing else.`;
 
 // Only our own pages may call this — blocks scripts hammering the endpoint
 // to burn the Gemini quota. (Origin can be spoofed by non-browser clients,
@@ -72,7 +75,7 @@ export default async (req) => {
             { text: PROMPT },
           ],
         }],
-        generationConfig: { temperature: 0.2, responseMimeType: 'application/json' },
+        generationConfig: { temperature: 0, topP: 1, seed: 42, responseMimeType: 'application/json' },
       }),
     });
 

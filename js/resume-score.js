@@ -48,6 +48,25 @@ function fileToBase64(file) {
   });
 }
 
+// A stable SHA-256 fingerprint of the file's bytes. The SAME resume always
+// hashes to the same key, so we can return the SAME score every time —
+// no more "different score on re-upload". (crypto.subtle needs https/localhost.)
+async function fileHash(file) {
+  try {
+    const buf = await file.arrayBuffer();
+    const digest = await crypto.subtle.digest('SHA-256', buf);
+    return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch { return null; }
+}
+function cachedScore(hash) {
+  if (!hash) return null;
+  try { const v = localStorage.getItem('ds_score_' + hash); return v ? JSON.parse(v) : null; } catch { return null; }
+}
+function storeScore(hash, result) {
+  if (!hash) return;
+  try { localStorage.setItem('ds_score_' + hash, JSON.stringify(result)); } catch {}
+}
+
 // ===== THE "AI IS READING YOUR RESUME" EXPERIENCE =====
 // Students should FEEL the analysis: we extract the real text from their PDF,
 // stream it through a scanner window with staged status messages, and hold
@@ -163,18 +182,29 @@ async function scoreResume() {
 
   try {
     const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
-    const scoring = isLocal
-      ? Promise.resolve(mockScore())
-      : (async () => {
-          const data = await fileToBase64(selectedFile);
-          const res = await fetch('/.netlify/functions/score-resume', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: selectedFile.name, mime: selectedFile.type, data }),
-          });
-          if (!res.ok) throw new Error('score failed ' + res.status);
-          return res.json();
-        })();
+    const scoring = (async () => {
+      // Same resume → same score. Return the cached result if we've seen
+      // these exact bytes before, so re-uploads never show a different number.
+      const hash = await fileHash(selectedFile);
+      const hit = cachedScore(hash);
+      if (hit) return hit;
+
+      let result;
+      if (isLocal) {
+        result = mockScore();
+      } else {
+        const data = await fileToBase64(selectedFile);
+        const res = await fetch('/.netlify/functions/score-resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: selectedFile.name, mime: selectedFile.type, data }),
+        });
+        if (!res.ok) throw new Error('score failed ' + res.status);
+        result = await res.json();
+      }
+      storeScore(hash, result);
+      return result;
+    })();
 
     // Real scoring runs in parallel with the scan — result held until 25s pass.
     const [result] = await Promise.all([scoring, minWait]);
