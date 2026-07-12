@@ -371,6 +371,23 @@ body::after {
 .pricing-grid.grid-4 { grid-template-columns: repeat(4, 1fr); max-width: 1180px; gap: 16px; }
 @media (max-width: 1040px) { .pricing-grid.grid-4 { grid-template-columns: repeat(2, 1fr); max-width: 720px; } }
 .pricing-grid.grid-2 { grid-template-columns: repeat(2, 1fr); max-width: 660px; }
+/* Compact 5-across so all tiers are visible without scrolling */
+.pricing-grid.grid-5 { grid-template-columns: repeat(5, 1fr); max-width: 1260px; gap: 12px; }
+@media (max-width: 1120px) { .pricing-grid.grid-5 { grid-template-columns: repeat(3, 1fr); max-width: 800px; } }
+@media (max-width: 720px) { .pricing-grid.grid-5 { grid-template-columns: 1fr; max-width: 380px; } }
+.pricing-compact .pricing-card { padding: 20px 16px; border-radius: 16px; }
+.pricing-compact .plan-name { font-size: 12px; letter-spacing: 1px; margin-bottom: 6px; min-height: 28px; }
+.pricing-compact .plan-price { font-size: 32px; letter-spacing: -1px; margin-bottom: 2px; }
+.pricing-compact .plan-price span { font-size: 12px; }
+.pricing-compact .plan-inr { font-size: 11px; margin-bottom: 4px; }
+.pricing-compact .plan-desc { font-size: 11px; margin-bottom: 12px; padding-bottom: 12px; }
+.pricing-compact .plan-features { gap: 8px; margin-bottom: 16px; }
+.pricing-compact .plan-features li { font-size: 12px; gap: 7px; align-items: flex-start; line-height: 1.35; }
+.pricing-compact .plan-features li::before { font-size: 10px; width: 15px; height: 15px; margin-top: 1px; }
+.pricing-compact .btn { padding: 10px; font-size: 12.5px; }
+.plan-tag { display: inline-block; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 6px; margin-bottom: 10px; }
+.plan-tag.ai { background: rgba(96,165,250,0.14); color: #93c5fd; }
+.plan-tag.hand { background: rgba(167,139,250,0.14); color: #c4b5fd; }
 .pricing-group-label { text-align: center; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #a78bfa; margin: 56px auto 0; }
 .pricing-group-sub { text-align: center; font-size: 13px; color: rgba(255,255,255,0.4); margin: 6px auto 0; max-width: 460px; }
 .pricing-card {
