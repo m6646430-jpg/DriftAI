@@ -1196,6 +1196,29 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
   .nav-phone .np-num { display: none; }
 }
 
+/* Always-visible services bar on mobile — so offerings are never hidden
+   behind the hamburger. Horizontal, tappable, scrolls if it overflows. */
+.mobile-quicknav { display: none; }
+@media (max-width: 900px) {
+  .mobile-quicknav {
+    display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    background: rgba(8,10,20,0.92); -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mobile-quicknav::-webkit-scrollbar { display: none; }
+  .mobile-quicknav a {
+    flex: 0 0 auto; font-size: 13px; font-weight: 700; white-space: nowrap;
+    color: rgba(255,255,255,0.82); text-decoration: none;
+    padding: 8px 15px; border-radius: 999px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);
+  }
+  .mobile-quicknav a.active {
+    background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+    color: #fff; border-color: transparent;
+  }
+}
+
 /* ===== ORDER INTAKE — file upload ===== */
 .order-file-label { display: flex; align-items: center; justify-content: center; text-align: center; gap: 8px; padding: 18px; margin-bottom: 16px; border: 1px dashed rgba(255,255,255,0.18); border-radius: 12px; cursor: pointer; font-size: 14px; color: rgba(255,255,255,0.6); transition: all 0.2s; }
 .order-file-label:hover { border-color: rgba(167,139,250,0.5); color: #fff; background: rgba(167,139,250,0.05); }
