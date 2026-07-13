@@ -49,6 +49,9 @@
     .client-form input, .client-form select, .client-form textarea { width: 100%; margin-bottom: 10px; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: inherit; font-size: 14px; }
     .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     #prepProgress { font-size: 13px; color: #a78bfa; margin: 10px 0; min-height: 18px; }
+    .admin-upload { display: flex; align-items: center; justify-content: center; text-align: center; gap: 8px; padding: 16px; margin-bottom: 10px; border: 1px dashed rgba(167,139,250,0.4); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); transition: all 0.2s; }
+    .admin-upload:hover { border-color: rgba(167,139,250,0.7); background: rgba(167,139,250,0.06); color: #fff; }
+    .app-dl { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
     .admin-gate { max-width: 420px; margin: 120px auto; text-align: center; }
     @media (max-width: 640px) { .stat-bar { grid-template-columns: 1fr 1fr; } .cf-row { grid-template-columns: 1fr; } }
   </style>
@@ -113,7 +116,11 @@
           <option value="Marketing">Marketing</option>
         </select>
       </div>
-      <textarea name="resume" rows="5" placeholder="Paste the client's current resume text here…" required></textarea>
+      <label class="admin-upload" id="resumeUpload">
+        <span id="resumeUploadText">📎 Upload the client's resume (PDF) — text is extracted automatically</span>
+        <input type="file" id="resumeFile" accept="application/pdf" hidden />
+      </label>
+      <textarea name="resume" id="resumeText" rows="4" placeholder="…or paste/edit the resume text here (auto-filled from your upload)" required></textarea>
       <button type="submit" class="btn btn-primary btn-lg w-full">+ Add client</button>
     </form>
     <div id="prepProgress"></div>

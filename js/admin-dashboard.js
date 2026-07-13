@@ -19,6 +19,77 @@
   let clients = load(KEY_C), apps = load(KEY_A);
   const uid = () => Math.random().toString(36).slice(2, 8) + clients.length + apps.length;
 
+  // ---------- PDF upload → text (reuses pdf.js) ----------
+  let pdfjsPromise = null;
+  function loadPdfJs() {
+    if (pdfjsPromise) return pdfjsPromise;
+    pdfjsPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; resolve(window.pdfjsLib); };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    return pdfjsPromise;
+  }
+  async function extractPdfText(file) {
+    const pdfjs = await loadPdfJs();
+    const buf = await file.arrayBuffer();
+    const doc = await pdfjs.getDocument({ data: buf }).promise;
+    let text = '';
+    for (let p = 1; p <= Math.min(doc.numPages, 6); p++) {
+      const page = await doc.getPage(p);
+      const c = await page.getTextContent();
+      text += c.items.map(i => i.str).join(' ') + '\n';
+    }
+    return text.replace(/[ \t]+/g, ' ').trim();
+  }
+  const upl = $('resumeUpload'), fileIn = $('resumeFile'), uplText = $('resumeUploadText'), resumeArea = $('resumeText');
+  if (upl && fileIn) {
+    upl.addEventListener('click', () => fileIn.click());
+    fileIn.addEventListener('change', async () => {
+      const file = fileIn.files[0]; if (!file) return;
+      if (file.type !== 'application/pdf') { uplText.textContent = '⚠️ PDF only'; return; }
+      uplText.textContent = '⏳ Reading ' + file.name + '…';
+      try {
+        const t = await extractPdfText(file);
+        if (t.length < 30) { uplText.textContent = '⚠️ Could not read text (scanned PDF?). Paste it below.'; return; }
+        resumeArea.value = t;
+        uplText.textContent = '✓ ' + file.name + ' — text extracted (edit below if needed)';
+      } catch { uplText.textContent = '⚠️ Could not read that PDF. Paste the text below.'; }
+    });
+  }
+
+  // ---------- download a tailored resume as an editable .doc ----------
+  function downloadTailored(appId) {
+    const a = apps.find(x => x.id === appId); if (!a) return;
+    const client = clients.find(c => c.id === a.clientId) || {};
+    const t = a.tailor || {};
+    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'>
+<head><meta charset="utf-8"><title>${esc(client.name || 'Resume')}</title></head>
+<body style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#222;">
+  <h2 style="margin:0;">${esc(client.name || 'Candidate')}</h2>
+  <p style="color:#666;margin:2px 0 14px;">Tailored for ${esc(a.role)} — ${esc(a.company)}</p>
+  <h3 style="color:#4f46e5;">Professional Summary</h3>
+  <p>${esc(t.summary || '')}</p>
+  <h3 style="color:#4f46e5;">Key Achievements</h3>
+  <ul>${(t.bullets || []).map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+  <h3 style="color:#4f46e5;">Skills &amp; Keywords</h3>
+  <p>${(t.keywords || []).map(esc).join(' &middot; ')}</p>
+  <hr/>
+  <h4 style="color:#999;">Original resume (for reference)</h4>
+  <div style="white-space:pre-wrap;color:#555;font-size:10pt;">${esc(client.resume || '')}</div>
+</body></html>`;
+    const safe = s => String(s || '').replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '').slice(0, 40) || 'resume';
+    const blob = new Blob(['﻿', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${safe(client.name)}_${safe(a.company)}.doc`;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   // ---------- jobs (from the live board) ----------
   let JOBS = [];
   fetch('data/jobs.json').then(r => r.json()).then(d => { JOBS = d.jobs || []; renderStats(); }).catch(() => {});
@@ -207,6 +278,7 @@
           </div>
         </details>
         <div class="ac-actions">
+          <button class="btn app-dl" data-dl="${esc(a.id)}">⬇ Download resume</button>
           <a href="${safeUrl(a.url)}" target="_blank" rel="noopener" class="btn btn-outline">↗ Open job to apply</a>
           ${a.status === 'applied'
             ? '<span class="app-done">✅ Applied</span>'
@@ -226,6 +298,8 @@
     if (ap) { setStatus(ap.dataset.applied, 'applied'); return; }
     const sk = e.target.closest('[data-skip]');
     if (sk) { setStatus(sk.dataset.skip, 'skipped'); return; }
+    const dl = e.target.closest('[data-dl]');
+    if (dl) { downloadTailored(dl.dataset.dl); return; }
     const tb = e.target.closest('[data-tab]');
     if (tb) { switchTab(tb.dataset.tab); return; }
   });
