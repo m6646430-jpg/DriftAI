@@ -1,15 +1,13 @@
 // ===== PAYMENT (Stripe Payment Links) =====
 // Create one Stripe Payment Link per product at https://dashboard.stripe.com/payment-links
 // then paste each generated URL below, replacing the placeholders.
-//   community        -> Recurring, $9.99 USD/month
 //   jobhunt          -> Recurring, $150 USD/month (Job Hunt Program)
 //   resume_only       -> One-time, $79.99 USD
 //   resume_rewrite    -> One-time, $99.99 USD (Resume + Cover Letter)
 //   resume_complete   -> One-time, $149.99 USD (Complete Package)
-// Any element with class="payment-link" and data-plan="community" (etc.) will redirect
-// to the matching link automatically. data-plan defaults to "community" if omitted.
+// Any element with class="payment-link" and data-plan="jobhunt" (etc.) will redirect
+// to the matching link automatically. data-plan defaults to "jobhunt" if omitted.
 const STRIPE_LINKS = {
-  community: 'https://buy.stripe.com/8x2aEXc408RXch660l4wM00',
   jobhunt: 'https://buy.stripe.com/7sY28rec82tzfti3Sd4wM01',
   resume_only: 'https://buy.stripe.com/6oU8wPaZWfgla8Y1K54wM02',
   resume_rewrite: 'https://buy.stripe.com/7sY4gz5FC6JPbd2ewR4wM03',
@@ -19,7 +17,7 @@ const STRIPE_LINKS = {
 };
 
 document.querySelectorAll('.payment-link').forEach(el => {
-  const plan = el.dataset.plan || 'community';
+  const plan = el.dataset.plan || 'jobhunt';
   el.href = STRIPE_LINKS[plan] || '#';
   el.target = '_blank';
   el.rel = 'noopener';
