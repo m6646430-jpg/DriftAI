@@ -9,6 +9,8 @@ let activeCountry = 'all';
 let activeCat = 'all';
 let activeSort = 'recent';
 let activeSearch = '';
+let latestOnly = false; // "🆕 Latest jobs" — only postings from the last 7 days
+const LATEST_WINDOW_MS = 7 * 86400000;
 const PAGE_SIZE = 24;
 let currentPage = 1;
 
@@ -52,6 +54,12 @@ function render() {
   const list = document.getElementById('jobboardList');
   if (!list) return;
   const q = activeSearch.trim().toLowerCase();
+  // "Latest" is measured from the newest posting in the data (not the wall
+  // clock) so it always shows the freshest week even if the board is a
+  // little stale between rebuilds.
+  const newestMs = latestOnly
+    ? ALL_JOBS.reduce((m, j) => Math.max(m, j.postedAt ? Date.parse(j.postedAt) : 0), 0)
+    : 0;
   const jobs = ALL_JOBS.filter(j => {
     const countryOk = activeCountry === 'all' || j.country === activeCountry;
     let catOk = true;
@@ -61,7 +69,8 @@ function render() {
       (j.role && j.role.toLowerCase().includes(q)) ||
       (j.company && j.company.toLowerCase().includes(q)) ||
       (j.location && j.location.toLowerCase().includes(q));
-    return countryOk && catOk && searchOk;
+    const latestOk = !latestOnly || (j.postedAt && (newestMs - Date.parse(j.postedAt)) <= LATEST_WINDOW_MS);
+    return countryOk && catOk && searchOk && latestOk;
   });
 
   // Sort
@@ -191,6 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const sortEl = document.getElementById('jobSort');
   if (sortEl) sortEl.addEventListener('change', () => { activeSort = sortEl.value; currentPage = 1; render(); });
+  const latestEl = document.getElementById('latestToggle');
+  if (latestEl) latestEl.addEventListener('click', () => {
+    latestOnly = !latestOnly;
+    latestEl.classList.toggle('active', latestOnly);
+    if (latestOnly) { activeSort = 'recent'; if (sortEl) sortEl.value = 'recent'; } // newest first when showing latest
+    currentPage = 1;
+    render();
+  });
   const searchEl = document.getElementById('jobSearch');
   const clearEl = document.getElementById('jobSearchClear');
   if (searchEl) {
