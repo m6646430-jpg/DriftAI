@@ -143,7 +143,7 @@ function ago(iso) {
 // Turn ATS job-description HTML (sometimes HTML-entity-encoded, as Greenhouse
 // returns) into clean plain text, trimmed to a size that's useful for tailoring
 // without bloating jobs.json. This is the text Gemini reads to match the JD.
-const JD_MAX = 700;  // stored JD is trimmed (for tailoring); skills are detected from the FULL text first
+const JD_MAX = 400;  // short snippet for tailoring context; tech filtering uses skills[]
 function plainJD(raw) {
   if (!raw) return '';
   let s = String(raw)
@@ -240,7 +240,7 @@ async function main() {
           jd: fullJd.slice(0, JD_MAX), // trimmed plain-text JD, for AI tailoring
         });
         kept++;
-        if (kept >= 20) break; // cap per company for variety
+
       }
       console.log(`✓ ${co.name} (${co.ats}): ${kept} kept`);
     } catch (e) {
@@ -256,7 +256,7 @@ async function main() {
     const j = Math.floor(Math.random() * (i + 1));
     [all[i], all[j]] = [all[j], all[i]];
   }
-  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 1000) };
+  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all }; // no cap — all matching jobs
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
   console.log(`\n✅ Wrote ${payload.jobs.length} jobs with EXACT posting links to data/jobs.json`);
 }
