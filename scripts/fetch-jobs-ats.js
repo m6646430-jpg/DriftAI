@@ -143,7 +143,7 @@ function ago(iso) {
 // Turn ATS job-description HTML (sometimes HTML-entity-encoded, as Greenhouse
 // returns) into clean plain text, trimmed to a size that's useful for tailoring
 // without bloating jobs.json. This is the text Gemini reads to match the JD.
-const JD_MAX = 1600;
+const JD_MAX = 700;  // stored JD is trimmed (for tailoring); skills are detected from the FULL text first
 function plainJD(raw) {
   if (!raw) return '';
   let s = String(raw)
@@ -153,7 +153,21 @@ function plainJD(raw) {
        .replace(/<li[^>]*>/gi, '• ').replace(/<\/(p|div|li|h[1-6]|ul|ol)>/gi, '\n')
        .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, ' ');
   s = s.replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').trim();
-  return s.slice(0, JD_MAX);
+  return s; // full text — trimming happens at storage time
+}
+
+// Detect known technologies from the FULL job text (title + description) so
+// the board's tech filter is accurate even though we only store a short JD.
+const TECH_DETECT = {
+  python: /\bpython\b/i, javascript: /\bjavascript\b/i, typescript: /\btypescript\b/i,
+  react: /\breact\b/i, java: /\bjava\b/i, node: /\bnode\.?js\b|\bnodejs\b/i,
+  aws: /\baws\b|\bamazon web services\b/i, sql: /\bsql\b|\bpostgres\b|\bmysql\b/i,
+  kubernetes: /\bkubernetes\b|\bk8s\b/i, docker: /\bdocker\b/i, cpp: /c\+\+/i, rust: /\brust\b/i,
+};
+function detectSkills(text) {
+  const out = [];
+  for (const k in TECH_DETECT) if (TECH_DETECT[k].test(text)) out.push(k);
+  return out;
 }
 
 async function fetchGreenhouse(co) {
@@ -206,6 +220,7 @@ async function main() {
         const key = (j.title + co.name).toLowerCase();
         if (seen.has(key)) continue;
         seen.add(key);
+        const fullJd = j.jd || '';
         all.push({
           id: 'a' + all.length,
           role: j.title.slice(0, 90),
@@ -221,10 +236,11 @@ async function main() {
           url: j.url, // EXACT posting link
           logo: LOGOS[category],
           source: co.ats, // greenhouse / lever / ashby
-          jd: j.jd || '', // trimmed plain-text job description, for AI tailoring
+          skills: detectSkills(fullJd + ' ' + j.title), // detected from the FULL text
+          jd: fullJd.slice(0, JD_MAX), // trimmed plain-text JD, for AI tailoring
         });
         kept++;
-        if (kept >= 12) break; // cap per company for variety
+        if (kept >= 20) break; // cap per company for variety
       }
       console.log(`✓ ${co.name} (${co.ats}): ${kept} kept`);
     } catch (e) {
@@ -240,7 +256,7 @@ async function main() {
     const j = Math.floor(Math.random() * (i + 1));
     [all[i], all[j]] = [all[j], all[i]];
   }
-  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 400) };
+  const payload = { updated: new Date().toISOString(), source: 'ats', jobs: all.slice(0, 1000) };
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
   console.log(`\n✅ Wrote ${payload.jobs.length} jobs with EXACT posting links to data/jobs.json`);
 }

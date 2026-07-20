@@ -66,15 +66,22 @@ async function loadJobs() {
   }
 }
 
+// A job matches a tech if it's in the precomputed skills tags (from the full
+// JD at build time) or the title mentions it — accurate regardless of how
+// much of the JD we store.
+function techMatch(j, tech) {
+  if (Array.isArray(j.skills) && j.skills.includes(tech)) return true;
+  const re = TECH_PATTERNS[tech];
+  return re ? re.test(j.role || '') : false;
+}
+
 // Hide any technology pill that has zero matching jobs in the current data,
 // so students never click a tech and hit an empty board.
 function pruneTechFilters() {
   document.querySelectorAll('[data-tech]').forEach(btn => {
     const t = btn.dataset.tech;
     if (t === 'all') return;
-    const re = TECH_PATTERNS[t];
-    const any = re && ALL_JOBS.some(j => re.test(j.role || '') || re.test(j.jd || ''));
-    btn.style.display = any ? '' : 'none';
+    btn.style.display = ALL_JOBS.some(j => techMatch(j, t)) ? '' : 'none';
   });
 }
 
@@ -98,8 +105,7 @@ function render() {
       (j.company && j.company.toLowerCase().includes(q)) ||
       (j.location && j.location.toLowerCase().includes(q));
     const latestOk = !latestOnly || (j.postedAt && (newestMs - Date.parse(j.postedAt)) <= LATEST_WINDOW_MS);
-    const techRe = activeTech !== 'all' ? TECH_PATTERNS[activeTech] : null;
-    const techOk = !techRe || techRe.test(j.role || '') || techRe.test(j.jd || '');
+    const techOk = activeTech === 'all' || techMatch(j, activeTech);
     return countryOk && catOk && searchOk && latestOk && techOk;
   });
 
