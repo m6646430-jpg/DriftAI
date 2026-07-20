@@ -11,6 +11,21 @@ let activeSort = 'recent';
 let activeSearch = '';
 let latestOnly = false; // "🆕 Latest jobs" — only postings from the last 7 days
 const LATEST_WINDOW_MS = 7 * 86400000;
+let activeTech = 'all'; // filter by a specific technology (matched in title + JD)
+const TECH_PATTERNS = {
+  python: /\bpython\b/i,
+  javascript: /\bjavascript\b/i,
+  typescript: /\btypescript\b/i,
+  react: /\breact\b/i,
+  java: /\bjava\b/i,
+  node: /\bnode\.?js\b|\bnodejs\b/i,
+  aws: /\baws\b|\bamazon web services\b/i,
+  sql: /\bsql\b|\bpostgres\b|\bmysql\b/i,
+  kubernetes: /\bkubernetes\b|\bk8s\b/i,
+  docker: /\bdocker\b/i,
+  cpp: /c\+\+/i,
+  rust: /\brust\b/i,
+};
 const PAGE_SIZE = 24;
 let currentPage = 1;
 
@@ -39,6 +54,7 @@ async function loadJobs() {
     const res = await fetch('data/jobs.json?t=' + Date.now()); // cache-bust so daily updates show
     const data = await res.json();
     ALL_JOBS = data.jobs || [];
+    pruneTechFilters(); // hide tech pills that have no matching jobs today
     if (meta) {
       const when = data.updated ? new Date(data.updated) : null;
       const stamp = when ? when.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
@@ -48,6 +64,18 @@ async function loadJobs() {
   } catch (e) {
     if (list) list.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.4);padding:40px;">Couldn't load jobs right now. Please refresh.</div>`;
   }
+}
+
+// Hide any technology pill that has zero matching jobs in the current data,
+// so students never click a tech and hit an empty board.
+function pruneTechFilters() {
+  document.querySelectorAll('[data-tech]').forEach(btn => {
+    const t = btn.dataset.tech;
+    if (t === 'all') return;
+    const re = TECH_PATTERNS[t];
+    const any = re && ALL_JOBS.some(j => re.test(j.role || '') || re.test(j.jd || ''));
+    btn.style.display = any ? '' : 'none';
+  });
 }
 
 function render() {
@@ -70,7 +98,9 @@ function render() {
       (j.company && j.company.toLowerCase().includes(q)) ||
       (j.location && j.location.toLowerCase().includes(q));
     const latestOk = !latestOnly || (j.postedAt && (newestMs - Date.parse(j.postedAt)) <= LATEST_WINDOW_MS);
-    return countryOk && catOk && searchOk && latestOk;
+    const techRe = activeTech !== 'all' ? TECH_PATTERNS[activeTech] : null;
+    const techOk = !techRe || techRe.test(j.role || '') || techRe.test(j.jd || '');
+    return countryOk && catOk && searchOk && latestOk && techOk;
   });
 
   // Sort
@@ -189,6 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeCat = btn.dataset.cat;
+      currentPage = 1;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-tech]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-tech]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTech = btn.dataset.tech;
       currentPage = 1;
       render();
     });

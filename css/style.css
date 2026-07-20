@@ -1228,3 +1228,6 @@ a.member-tile:hover { transform: translateY(-4px); border-color: rgba(167,139,25
 .job-latest-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); transition: all 0.2s; }
 .job-latest-btn:hover { border-color: rgba(52,211,153,0.5); color: #fff; }
 .job-latest-btn.active { background: linear-gradient(135deg, #059669, #34d399); color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(52,211,153,0.35); }
+
+/* Job board — technology filter row */
+.jobboard-tech .tech-label { display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); margin-right: 4px; }
