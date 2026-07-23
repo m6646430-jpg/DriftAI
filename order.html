@@ -97,8 +97,12 @@
           Haven't paid yet? <a href="resume-services.html" style="color:#a78bfa;">Pick your package first →</a>
         </p>
       </form>
-      <div id="orderSuccess" class="form-success" style="display:none;">
-        ✅ Got it! Your details are in. Our team will email you within 24 hours to get started. Need anything urgent? <a href="https://wa.me/16474953399" style="color:#34d399;font-weight:700;" target="_blank" rel="noopener">WhatsApp us →</a>
+      <div id="orderSuccess" class="form-success" style="display:none;text-align:center;">
+        <div style="font-size:38px;margin-bottom:8px;">✅</div>
+        <div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:6px;">Details received!</div>
+        <p style="color:rgba(255,255,255,0.6);font-size:14px;margin-bottom:20px;">One last step — book your onboarding call so we can connect and get started.</p>
+        <a id="bookCallBtn" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-lg">📅 Book Your Call</a>
+        <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:16px;">Prefer chat? <a href="https://wa.me/16474953399" style="color:#34d399;font-weight:700;" target="_blank" rel="noopener">WhatsApp us →</a></p>
       </div>
     </div>
   </div>
@@ -114,6 +118,14 @@
 
 <script src="js/main.js"></script>
 <script>
+  // ⬇ SET THIS to your scheduling link (Calendly / Cal.com / Google appt page).
+  // Until it's a real URL, the "Book Your Call" button falls back to WhatsApp.
+  const BOOKING_URL = ''; // e.g. 'https://calendly.com/driftai/onboarding'
+  (function () {
+    const btn = document.getElementById('bookCallBtn');
+    if (btn) btn.href = /^https?:\/\//.test(BOOKING_URL) ? BOOKING_URL : 'https://wa.me/16474953399';
+  })();
+
   // Pre-select the service if Stripe redirected here with ?plan=<key>.
   (function () {
     const map = {
