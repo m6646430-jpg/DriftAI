@@ -1,0 +1,18 @@
+#driftai-panel {
+  position: fixed; right: 18px; bottom: 18px; z-index: 2147483647;
+  width: 260px; padding: 16px; border-radius: 14px;
+  background: #0b1020; color: #fff; border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+  font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; font-size: 13px;
+}
+#driftai-panel .da-head { font-weight: 800; font-size: 13px; margin-bottom: 12px; letter-spacing: 0.3px; }
+#driftai-panel .da-logo { font-weight: 900; }
+#driftai-panel .da-logo b { background: linear-gradient(135deg,#60a5fa,#a78bfa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+#driftai-panel .da-btn {
+  width: 100%; padding: 10px; border: none; border-radius: 10px; cursor: pointer;
+  background: linear-gradient(135deg,#4f8ef7,#a78bfa); color: #fff; font-weight: 800; font-size: 13px;
+}
+#driftai-panel .da-btn:hover { filter: brightness(1.07); }
+#driftai-panel .da-status { min-height: 16px; margin-top: 10px; font-size: 12px; color: #86efac; }
+#driftai-panel .da-note { margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+#driftai-panel .da-edit { display: inline-block; margin-top: 10px; font-size: 12px; color: #a78bfa; text-decoration: none; }

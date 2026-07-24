@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DriftAI Auto-Apply — My Profile</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; background: #0b1020; color: #fff; font-family: -apple-system,'Segoe UI',Roboto,Arial,sans-serif; }
+    .wrap { max-width: 560px; margin: 0 auto; padding: 40px 24px 60px; }
+    h1 { font-size: 24px; font-weight: 900; margin: 0 0 4px; }
+    h1 b { background: linear-gradient(135deg,#60a5fa,#a78bfa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    p.sub { color: rgba(255,255,255,0.55); font-size: 14px; margin: 0 0 26px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.6); margin: 14px 0 5px; }
+    input, select { width: 100%; box-sizing: border-box; padding: 11px 13px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #fff; font-size: 14px; font-family: inherit; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    button { margin-top: 24px; width: 100%; padding: 13px; border: none; border-radius: 11px; cursor: pointer; background: linear-gradient(135deg,#4f8ef7,#a78bfa); color: #fff; font-weight: 800; font-size: 15px; }
+    .saved { text-align: center; color: #34d399; font-weight: 700; margin-top: 14px; min-height: 20px; }
+    .hint { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Drift<b>AI</b> Auto-Apply</h1>
+    <p class="sub">Fill this in once. On any Greenhouse, Lever or Ashby application, click "Fill this application" and we drop these in for you.</p>
+
+    <form id="profileForm">
+      <div class="row">
+        <div><label>First name</label><input name="firstName" required /></div>
+        <div><label>Last name</label><input name="lastName" required /></div>
+      </div>
+      <label>Email</label><input name="email" type="email" required />
+      <label>Phone</label><input name="phone" type="tel" />
+      <div class="row">
+        <div><label>LinkedIn URL</label><input name="linkedin" placeholder="https://linkedin.com/in/…" /></div>
+        <div><label>GitHub URL</label><input name="github" placeholder="https://github.com/…" /></div>
+      </div>
+      <label>Portfolio / Website</label><input name="website" placeholder="https://…" />
+      <label>City</label><input name="city" placeholder="e.g. Toronto" />
+      <div class="row">
+        <div>
+          <label>Authorized to work?</label>
+          <select name="workAuthorized"><option value="">—</option><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+        <div>
+          <label>Need visa sponsorship?</label>
+          <select name="needsSponsorship"><option value="">—</option><option value="yes">Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <p class="hint">📎 Your resume file is attached by you on each application — browsers don't allow extensions to attach files for you (a good security rule).</p>
+      <button type="submit">Save profile</button>
+      <div class="saved" id="saved"></div>
+    </form>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
