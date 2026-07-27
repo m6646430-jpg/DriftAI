@@ -81,8 +81,29 @@
     $('aaAnswers').innerHTML = (r.answers || []).map(qa => `<div class="aa-qa"><div class="q">${esc(qa.q)}</div><div class="a">${esc(qa.a)}</div></div>`).join('') || '<p style="color:rgba(255,255,255,0.4);">No standard questions detected.</p>';
     const needs = r.needs_you || [];
     $('aaNeedBox').style.display = needs.length ? '' : 'none';
-    $('aaNeeds').innerHTML = needs.map((n, i) => `<label>${esc(n.q)} <span class="why">(${esc(n.why || '')})</span></label><input data-need="${i}" placeholder="Your answer" />`).join('');
+    $('aaNeeds').innerHTML = needs.map((n, i) => `<label>${esc(n.q)} <span class="why" data-note="${i}">(${esc(n.why || '')})</span></label><input data-need="${i}" placeholder="Your answer" />`).join('');
+    prefillSaved(needs);
     if (j.url && /^https?:\/\//.test(j.url)) $('aaOpen').href = j.url; else $('aaOpen').style.display = 'none';
+  }
+
+  // Auto-fill "needs you" answers the student saved on a previous application,
+  // and remember new answers as they type them.
+  async function prefillSaved(needs) {
+    for (let i = 0; i < needs.length; i++) {
+      const inp = document.querySelector(`[data-need="${i}"]`);
+      if (!inp) continue;
+      try {
+        const saved = window.DriftProfile && await window.DriftProfile.recall(needs[i].q);
+        if (saved) {
+          inp.value = saved;
+          const note = document.querySelector(`[data-note="${i}"]`);
+          if (note) { note.textContent = '🧠 saved — reused from before'; note.style.color = '#34d399'; }
+        }
+      } catch {}
+      inp.addEventListener('blur', () => {
+        if (inp.value.trim() && window.DriftProfile) window.DriftProfile.remember(needs[i].q, inp.value);
+      });
+    }
   }
 
   // ---- copy ----
@@ -97,6 +118,7 @@
   $('aaCopyAll').addEventListener('click', (e) => {
     const yours = [...document.querySelectorAll('[data-need]')].map((inp, i) => {
       const q = (DATA.needs_you[i] || {}).q || '';
+      if (inp.value.trim() && window.DriftProfile) window.DriftProfile.remember(q, inp.value); // save for next time
       return inp.value.trim() ? `Q: ${q}\nA: ${inp.value.trim()}` : null;
     }).filter(Boolean).join('\n\n');
     const all = `APPLICATION FOR: ${JOB.role}${JOB.company ? ' @ ' + JOB.company : ''}\n\n=== TAILORED RESUME ===\n${block('resume')}\n\n=== COVER LETTER ===\n${block('cover')}\n\n=== ANSWERS ===\n${block('answers')}${yours ? '\n\n=== YOUR DETAILS ===\n' + yours : ''}`;
