@@ -143,9 +143,9 @@
     if (!hasForm || handled) return;
     handled = true;
     panel();
-    // Auto mode: fill immediately without waiting for a click
+    // Auto mode is ON by default — the agent fills the moment the form loads.
     const { ds_auto_mode } = await chrome.storage.local.get('ds_auto_mode');
-    if (ds_auto_mode) setTimeout(() => doFill(false), 600);
+    if (ds_auto_mode !== false) setTimeout(() => doFill(false), 700);
   }
   maybeShow();
   const obs = new MutationObserver(() => maybeShow());

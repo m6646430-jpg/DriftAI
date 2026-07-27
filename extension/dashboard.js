@@ -29,7 +29,7 @@ const stLabel = { opening: 'Opening…', filled: 'Filled — submit', 'needs-you
   profile = store.driftai_profile;
   if (!profile || !profile.email) { $('setup').style.display = 'block'; wireSetup(); return; }
   $('app').style.display = 'block';
-  $('autoMode').checked = !!store.ds_auto_mode;
+  $('autoMode').checked = store.ds_auto_mode !== false; // default ON — the agent auto-fills
 
   try {
     const res = await fetch('https://driftai.info/data/jobs.json?t=' + Date.now());
@@ -43,7 +43,7 @@ const stLabel = { opening: 'Opening…', filled: 'Filled — submit', 'needs-you
 
   $('autoMode').addEventListener('change', e => chrome.storage.local.set({ ds_auto_mode: e.target.checked }));
   $('editProfile').addEventListener('click', e => { e.preventDefault(); chrome.runtime.openOptionsPage(); });
-  $('applyAll').addEventListener('click', () => matches.slice(0, 5).forEach((m, i) => setTimeout(() => applyJob(m.job, m.match), i * 900)));
+  $('applyAll').addEventListener('click', () => matches.slice(0, 5).forEach((m, i) => setTimeout(() => applyJob(m.job, m.match, false), i * 1200)));
   $('clearDone').addEventListener('click', clearFinished);
 })();
 
@@ -66,8 +66,23 @@ function renderMatches() {
   $('matches').querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', () => markSkipped(matches[+b.dataset.skip].job, matches[+b.dataset.skip].match)));
 }
 
-function applyJob(job, match) {
-  chrome.runtime.sendMessage({ type: 'apply-job', job: { id: job.id, url: job.url, role: job.role, company: job.company, match } });
+const TABJOB = 'ds_tab_job';
+async function applyJob(job, match, active = true) {
+  // Set the row to "opening", then open the application tab directly and
+  // remember which tab is which job (so fill-reports update the right row).
+  const s = (await chrome.storage.local.get(STATUS_KEY))[STATUS_KEY] || {};
+  s[job.id] = { status: 'opening', note: 'Opening application…', role: job.role, company: job.company, match, ts: Date.now() };
+  await chrome.storage.local.set({ [STATUS_KEY]: s });
+  try {
+    if (!/^https?:\/\//.test(job.url || '')) throw new Error('no url');
+    const tab = await chrome.tabs.create({ url: job.url, active });
+    const map = (await chrome.storage.local.get(TABJOB))[TABJOB] || {};
+    map[tab.id] = job.id;
+    await chrome.storage.local.set({ [TABJOB]: map });
+  } catch (e) {
+    s[job.id] = { ...s[job.id], status: 'needs-you', note: 'Couldn\'t open automatically — open the posting manually.' };
+    await chrome.storage.local.set({ [STATUS_KEY]: s });
+  }
 }
 async function markSkipped(job, match) {
   const s = (await chrome.storage.local.get(STATUS_KEY))[STATUS_KEY] || {};

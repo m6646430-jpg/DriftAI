@@ -16,18 +16,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   (async () => {
     if (msg?.type === 'open-options') { chrome.runtime.openOptionsPage(); return; }
 
-    // Dashboard asks to apply to a job → open its application tab
-    if (msg?.type === 'apply-job') {
-      const { job } = msg;
-      await setStatus(job.id, { status: 'opening', note: 'Opening application…', url: job.url, role: job.role, company: job.company });
-      const tab = await chrome.tabs.create({ url: job.url, active: false });
-      const map = await get(TABJOB);
-      map[tab.id] = job.id;
-      await chrome.storage.local.set({ [TABJOB]: map });
-      sendResponse({ ok: true, tabId: tab.id });
-      return;
-    }
-
     // Content script reports what happened on an application page
     if (msg?.type === 'fill-report' && sender.tab) {
       const map = await get(TABJOB);
