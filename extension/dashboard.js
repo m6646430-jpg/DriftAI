@@ -43,7 +43,7 @@ const stLabel = { opening: 'Opening…', filled: 'Filled — submit', 'needs-you
 
   $('autoMode').addEventListener('change', e => chrome.storage.local.set({ ds_auto_mode: e.target.checked }));
   $('editProfile').addEventListener('click', e => { e.preventDefault(); chrome.runtime.openOptionsPage(); });
-  $('applyAll').addEventListener('click', () => matches.slice(0, 5).forEach((m, i) => setTimeout(() => applyJob(m.job, m.match, false), i * 1200)));
+  $('applyAll').addEventListener('click', applyBatch);
   $('clearDone').addEventListener('click', clearFinished);
 })();
 
@@ -51,6 +51,9 @@ function wireSetup() { $('goProfile').addEventListener('click', e => { e.prevent
 
 function renderMatches() {
   if (!matches.length) { $('matches').innerHTML = '<div class="empty">Couldn\'t load jobs. Check your connection and reopen.</div>'; return; }
+  const strong = matches.filter(m => m.match >= 70).length;
+  const head = document.querySelector('.sec-head h2');
+  if (head) head.innerHTML = `Top matches for you <span style="font-weight:600;color:rgba(255,255,255,0.45);font-size:13px;">· ${matches.length} shown, ${strong} strong (70%+)</span>`;
   $('matches').innerHTML = matches.map((m, i) => `
     <div class="card">
       <span class="match ${mClass(m.match)}">🎯 ${m.match}%</span>
@@ -64,6 +67,23 @@ function renderMatches() {
     </div>`).join('');
   $('matches').querySelectorAll('[data-apply]').forEach(b => b.addEventListener('click', () => { const m = matches[+b.dataset.apply]; applyJob(m.job, m.match); }));
   $('matches').querySelectorAll('[data-skip]').forEach(b => b.addEventListener('click', () => markSkipped(matches[+b.dataset.skip].job, matches[+b.dataset.skip].match)));
+}
+
+// One-click: open + auto-fill the top matches that aren't already in flight.
+async function applyBatch() {
+  const btn = $('applyAll');
+  const status = (await chrome.storage.local.get(STATUS_KEY))[STATUS_KEY] || {};
+  const batch = matches.filter(m => !status[m.job.id]).slice(0, 5);
+  if (!batch.length) { btn.textContent = '✓ Top matches already applied'; setTimeout(() => btn.textContent = '⚡ Open + fill top 5', 3000); return; }
+  btn.disabled = true;
+  document.querySelector('table')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  for (let i = 0; i < batch.length; i++) {
+    btn.textContent = `⚡ Applying… ${i + 1}/${batch.length}`;
+    await applyJob(batch[i].job, batch[i].match, false); // background tabs
+    await new Promise(r => setTimeout(r, 1400));
+  }
+  btn.textContent = `✅ Opened ${batch.length} — check the tracker`;
+  setTimeout(() => { btn.disabled = false; btn.textContent = '⚡ Open + fill top 5'; }, 4000);
 }
 
 const TABJOB = 'ds_tab_job';
