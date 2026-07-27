@@ -8,4 +8,5 @@ chrome.storage.local.get('driftai_profile').then(({ driftai_profile }) => {
     status.className = 'status warn';
   }
 });
+document.getElementById('dash').addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html') }));
 document.getElementById('edit').addEventListener('click', () => chrome.runtime.openOptionsPage());

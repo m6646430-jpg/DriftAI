@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "DriftAI Auto-Apply",
-  "version": "0.1.0",
-  "description": "Auto-fill job applications on Greenhouse, Lever, and Ashby with your saved DriftAI profile. You review and submit.",
-  "permissions": ["storage"],
+  "version": "0.2.0",
+  "description": "Match jobs, auto-fill applications on Greenhouse/Lever/Ashby, and track status. Human submits — no CAPTCHA bypass, no bans.",
+  "permissions": ["storage", "tabs"],
   "host_permissions": [
+    "https://driftai.info/*",
     "https://boards.greenhouse.io/*",
     "https://job-boards.greenhouse.io/*",
     "https://jobs.lever.co/*",
@@ -15,12 +16,12 @@
     "default_title": "DriftAI Auto-Apply"
   },
   "options_page": "options.html",
-  "background": { "service_worker": "background.js" },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "background": { "service_worker": "background.js" },
   "content_scripts": [
     {
       "matches": [

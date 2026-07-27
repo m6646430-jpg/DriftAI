@@ -1,5 +1,5 @@
 const form = document.getElementById('profileForm');
-const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'linkedin', 'github', 'website', 'city', 'workAuthorized', 'needsSponsorship'];
+const FIELDS = ['firstName', 'lastName', 'email', 'phone', 'linkedin', 'github', 'website', 'city', 'targetRole', 'targetCountry', 'skills', 'workAuthorized', 'needsSponsorship'];
 
 // Load saved profile into the form
 chrome.storage.local.get('driftai_profile').then(({ driftai_profile }) => {
