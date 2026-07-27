@@ -80,6 +80,24 @@ Two secrets were pasted in chat during setup and must be rotated:
       verify) or turn OFF for frictionless signup. (Auth → Providers → Email.)
 - [ ] **Do one real Google login test** on the live site after deploy.
 - [ ] **Do one real GitHub login test** on the live site after deploy.
+- [ ] **Saved-answers table (cross-device sync)** — Supabase → SQL Editor →
+      run this once so the AI Apply Assistant syncs a student's answers
+      across their devices:
+      ```sql
+      create table apply_answers (
+        user_id uuid not null references auth.users on delete cascade default auth.uid(),
+        qkey text not null,
+        question text,
+        answer text,
+        updated_at timestamptz default now(),
+        primary key (user_id, qkey)
+      );
+      alter table apply_answers enable row level security;
+      create policy "own answers" on apply_answers for all
+        using (user_id = auth.uid()) with check (user_id = auth.uid());
+      ```
+      Until this table exists, saved answers still work per-browser
+      (localStorage) — they just won't follow the student to another device.
 
 ---
 
