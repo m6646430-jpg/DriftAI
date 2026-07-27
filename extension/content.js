@@ -137,18 +137,41 @@
     box.querySelector('#da-edit').addEventListener('click', e => { e.preventDefault(); chrome.runtime.sendMessage({ type: 'open-options' }); });
   }
 
+  // If the page is a job description (no form yet), click the site's own
+  // "Apply" button to jump straight to the application form. (Clicks a real
+  // button in your browser — no bypass.) Skips wasting time on the JD.
+  let applyClicked = false;
+  function clickApplyToReveal() {
+    if (applyClicked) return;
+    const cands = [...document.querySelectorAll('a, button, [role="button"]')].filter(el => {
+      const t = (el.innerText || el.textContent || '').trim().toLowerCase();
+      if (!t || t.length > 26) return false;
+      return /^(apply|apply now|apply for this( job| role| position)?|apply to this job|application|i'?m interested|start application|submit application)$/.test(t)
+        || (/\bapply\b/.test(t) && !/apply on|external|company (site|website)|elsewhere/i.test(t));
+    }).filter(isVisible);
+    // Prefer controls that stay on the same ATS (don't bounce to an external site).
+    const btn = cands.find(el => el.tagName === 'BUTTON' || el.getAttribute('role') === 'button'
+      || (el.tagName === 'A' && (!el.href || el.href.startsWith(location.origin))));
+    if (btn) { applyClicked = true; btn.click(); }
+  }
+
   let handled = false;
   async function maybeShow() {
     const hasForm = document.querySelector('input[type="email"], input[name*="email" i], input[id*="email" i]');
-    if (!hasForm || handled) return;
-    handled = true;
-    panel();
-    // Auto mode is ON by default — the agent fills the moment the form loads.
-    const { ds_auto_mode } = await chrome.storage.local.get('ds_auto_mode');
-    if (ds_auto_mode !== false) setTimeout(() => doFill(false), 700);
+    if (hasForm) {
+      if (handled) return;
+      handled = true;
+      panel();
+      // Auto mode is ON by default — the agent fills the moment the form loads.
+      const { ds_auto_mode } = await chrome.storage.local.get('ds_auto_mode');
+      if (ds_auto_mode !== false) setTimeout(() => doFill(false), 700);
+      return;
+    }
+    // No form yet → reveal it by clicking the page's Apply button (once).
+    clickApplyToReveal();
   }
   maybeShow();
   const obs = new MutationObserver(() => maybeShow());
   obs.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(() => obs.disconnect(), 20000);
+  setTimeout(() => obs.disconnect(), 25000);
 })();
