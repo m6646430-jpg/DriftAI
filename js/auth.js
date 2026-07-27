@@ -9,7 +9,11 @@
 const SUPABASE_URL = 'https://nldrbixsorjxbdkakfoj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sZHJiaXhzb3JqeGJka2FrZm9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MzQ3MDIsImV4cCI6MjA5OTExMDcwMn0.DCyPGyn12G8bdwhg2DKSfH-riK12Fvh5ORibyKcnM7U';
 
-const AUTH_CONFIGURED = !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
+// On localhost we use DEMO auth (localStorage, no external calls, no email
+// confirmation) so the full login → dashboard flow is testable offline.
+// The live driftai.info domain uses real Supabase accounts.
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+const AUTH_CONFIGURED = !IS_LOCAL && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
 const DEMO_KEY = 'driftai_demo_user';
 
 let _sb = null;
