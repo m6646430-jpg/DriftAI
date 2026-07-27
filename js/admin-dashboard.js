@@ -94,6 +94,29 @@
   let JOBS = [];
   fetch('data/jobs.json').then(r => r.json()).then(d => { JOBS = d.jobs || []; renderStats(); }).catch(() => {});
 
+  // ---------- match scoring (auto-match pipeline) ----------
+  const TECH_PATTERNS = {
+    python: /\bpython\b/i, javascript: /\bjavascript\b/i, typescript: /\btypescript\b/i,
+    react: /\breact\b/i, java: /\bjava\b/i, node: /\bnode\.?js\b|\bnodejs\b/i,
+    aws: /\baws\b|\bamazon web services\b/i, sql: /\bsql\b|\bpostgres\b|\bmysql\b/i,
+    kubernetes: /\bkubernetes\b|\bk8s\b/i, docker: /\bdocker\b/i, cpp: /c\+\+/i, rust: /\brust\b/i,
+  };
+  function detectSkills(text) { const out = []; for (const k in TECH_PATTERNS) if (TECH_PATTERNS[k].test(text || '')) out.push(k); return out; }
+  // 0–100 compatibility of a job to a client (country + field + skills + target role).
+  function scoreMatch(client, job) {
+    let s = 0;
+    if (client.country === 'any' || client.country === job.country) s += 20;
+    if (client.category === 'any' || client.category === job.category) s += 20;
+    const cs = client._skills || (client._skills = detectSkills(client.resume));
+    const js = job.skills || [];
+    if (cs.length && js.length) { const hit = cs.filter(x => js.includes(x)).length; s += Math.round((hit / cs.length) * 45); }
+    else s += 18;
+    const target = (client.targetRole || '').toLowerCase();
+    if (target) { const words = target.split(/\W+/).filter(w => w.length > 3); s += words.some(w => (job.role || '').toLowerCase().includes(w)) ? 15 : 0; }
+    else s += 8;
+    return Math.max(0, Math.min(100, s));
+  }
+
   // ---------- agents ----------
   async function tailorAgent(resume, job) {
     if (isLocal) return mockTailor(resume, job);
@@ -149,29 +172,25 @@
     const btn = $('prepBtn'); if (btn) { btn.disabled = true; }
     const prog = $('prepProgress');
     try {
+      client._skills = null; // recompute skills fresh
       const already = new Set(apps.filter(a => a.clientId === client.id).map(a => a.jobId));
-      let pool = JOBS.filter(j => !already.has(j.id));
-      if (client.country && client.country !== 'any') {
-        const byCountry = pool.filter(j => j.country === client.country);
-        if (byCountry.length >= 3) pool = byCountry;
-      }
-      if (client.category && client.category !== 'any') {
-        const byCat = pool.filter(j => j.category === client.category);
-        if (byCat.length >= 3) pool = byCat;
-      }
-      const picks = pool.slice(0, n);
+      // AUTO-MATCH: score every unseen job for this client, best fit first.
+      const ranked = JOBS.filter(j => !already.has(j.id))
+        .map(j => ({ job: j, match: scoreMatch(client, j) }))
+        .sort((a, b) => b.match - a.match);
+      const picks = ranked.slice(0, n);
       if (!picks.length) { alert('No new matching jobs to prepare for this client right now.'); return; }
 
       let done = 0;
-      for (const job of picks) {
-        if (prog) prog.textContent = `Preparing ${done + 1} of ${picks.length} — ${job.role} @ ${job.company}…`;
+      for (const { job, match } of picks) {
+        if (prog) prog.textContent = `Matching + tailoring ${done + 1} of ${picks.length} — ${job.role} @ ${job.company} (${match}% fit)…`;
         const t = await tailorAgent(client.resume, job);
         const tailoredText = (t.summary || '') + '\n' + (t.bullets || []).join('\n');
         const qa = await qaAgent(tailoredText, job);
         apps.unshift({
           id: uid(), clientId: client.id, clientName: client.name,
           jobId: job.id, role: job.role, company: job.company, url: job.url, country: job.country,
-          tailor: t, qa, status: 'prepared', createdAt: new Date().toISOString(),
+          match, tailor: t, qa, status: 'prepared', createdAt: new Date().toISOString(),
         });
         done++;
         persist();
@@ -197,6 +216,7 @@
     clients.unshift({
       id: uid(), name: f.get('name') || 'Client', email: f.get('email') || '',
       country: f.get('country') || 'any', category: f.get('category') || 'any',
+      targetRole: (f.get('targetRole') || '').trim(),
       resume, createdAt: new Date().toISOString(),
     });
     persist();
@@ -251,13 +271,13 @@
           <button class="ac-del" data-del="${esc(c.id)}">✕</button>
         </div>
         <div class="ac-actions">
-          <button class="btn btn-primary" data-prep="${esc(c.id)}">✨ Prepare 5 applications</button>
+          <button class="btn btn-primary" data-prep="${esc(c.id)}">🎯 Auto-match &amp; prepare top 8</button>
           <span class="ac-count">${apps.filter(a => a.clientId === c.id).length} prepared</span>
         </div>
       </div>`).join('') : '<p class="admin-empty">No clients yet. Add one above to start.</p>';
 
-    // queue
-    const q = apps.slice(0, 100);
+    // queue — best-match applications first
+    const q = apps.slice().sort((a, b) => (b.match || 0) - (a.match || 0)).slice(0, 100);
     $('queueList').innerHTML = q.length ? q.map(a => `
       <div class="admin-card app-card status-${esc(a.status)}">
         <div class="ac-head">
@@ -265,7 +285,10 @@
             <strong>${esc(a.role)}</strong>
             <span class="ac-sub">${esc(a.company)} · ${esc(a.clientName)} · ${esc(a.country)}</span>
           </div>
-          ${badge(a.qa)}
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+            ${typeof a.match === 'number' ? `<span class="match-badge ${a.match >= 75 ? 'ok' : a.match >= 55 ? 'warn' : 'bad'}">🎯 ${a.match}% match</span>` : ''}
+            ${badge(a.qa)}
+          </div>
         </div>
         <details class="app-detail">
           <summary>View tailored resume + QA</summary>
@@ -291,7 +314,7 @@
   // ---------- events (delegated) ----------
   document.addEventListener('click', e => {
     const prep = e.target.closest('[data-prep]');
-    if (prep) { const c = clients.find(x => x.id === prep.dataset.prep); if (c) prepare(c, 5); return; }
+    if (prep) { const c = clients.find(x => x.id === prep.dataset.prep); if (c) prepare(c, 8); return; }
     const del = e.target.closest('[data-del]');
     if (del) { deleteClient(del.dataset.del); return; }
     const ap = e.target.closest('[data-applied]');
