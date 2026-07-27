@@ -162,7 +162,7 @@ function render() {
       <div class="jbc-tags">${tags.join('')}</div>
       <div class="jbc-actions">
         <a href="${safeUrl(j.url)}" class="jbc-apply" target="_blank" rel="noopener">↗ Apply</a>
-        <button class="jbc-tailor jb-tailor" data-jobid="${esc(j.id)}">✨ Tailor Resume</button>
+        <button class="jbc-tailor jb-aiapply" data-jobid="${esc(j.id)}">🤖 AI Apply</button>
       </div>
     </div>`;
   }).join('');
@@ -242,6 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', e => {
     const b = e.target.closest('.jbp-btn');
     if (b && !b.disabled) goToPage(b.dataset.page);
+  });
+  // "🤖 AI Apply" → open the assistant with this job loaded
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.jb-aiapply');
+    if (!btn) return;
+    const j = ALL_JOBS.find(x => x.id === btn.dataset.jobid);
+    if (!j) return;
+    sessionStorage.setItem('ds_apply_job', JSON.stringify({ id: j.id, role: j.role, company: j.company, jd: j.jd || '', url: j.url }));
+    location.href = 'apply.html';
   });
   const sortEl = document.getElementById('jobSort');
   if (sortEl) sortEl.addEventListener('change', () => { activeSort = sortEl.value; currentPage = 1; render(); });
