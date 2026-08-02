@@ -183,6 +183,22 @@
         <div class="score-breakdown" id="scoreBreakdown"></div>
         <div class="score-tips" id="scoreTips"></div>
 
+        <!-- What the ATS actually sees (deterministic, no AI) -->
+        <div class="ats-panel" id="atsPanel" style="display:none;">
+          <div class="ats-head">
+            <div>
+              <div class="ats-title">🤖 What the ATS actually sees</div>
+              <div class="ats-sub">We read your PDF exactly like an applicant-tracking system does — plain text only, no layout or images.</div>
+            </div>
+            <span class="ats-score" id="atsScore"></span>
+          </div>
+          <div id="atsList"></div>
+          <details class="ats-peek">
+            <summary>👀 See the raw text the ATS extracts</summary>
+            <pre id="atsText"></pre>
+          </details>
+        </div>
+
         <div class="score-cta">
           <div class="score-cta-title">Want us to fix it and get you to 90+?</div>
           <p class="score-cta-sub">Our team rewrites your resume by hand, ATS-optimized, in 48 hours. Talk to us free:</p>

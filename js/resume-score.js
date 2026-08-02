@@ -119,6 +119,71 @@ async function extractPdfText(file) {
   }
 }
 
+// ===== ATS EXTRACTION CHECK =====
+// Reads the PDF exactly the way an applicant-tracking system does (plain text
+// only — no layout, no images) and reports what actually survives. This is
+// deterministic (no AI), so it's real evidence rather than an opinion.
+async function atsExtract(file) {
+  try {
+    const pdfjs = await loadPdfJs();
+    const buf = await file.arrayBuffer();
+    const doc = await pdfjs.getDocument({ data: buf }).promise;
+    let text = '';
+    for (let p = 1; p <= doc.numPages; p++) {
+      const page = await doc.getPage(p);
+      const c = await page.getTextContent();
+      text += c.items.map(i => i.str).join(' ') + '\n';
+    }
+    return { text: text.replace(/[ \t]+/g, ' ').trim(), pages: doc.numPages, ok: true };
+  } catch {
+    return { text: '', pages: 0, ok: false };
+  }
+}
+
+function atsChecks({ text, pages, ok }) {
+  const t = text || '';
+  const words = t.split(/\s+/).filter(Boolean).length;
+  const email = (t.match(/[\w.+-]+@[\w-]+\.[\w.]+/) || [])[0] || null;
+  const phone = (t.match(/(\+?\d[\d\s().-]{7,}\d)/) || [])[0] || null;
+  const linkedin = /linkedin\.com\/in\//i.test(t);
+  const sections = ['experience', 'education', 'skills'].filter(s => new RegExp(`\\b${s}\\b`, 'i').test(t));
+  const dates = (t.match(/\b(19|20)\d{2}\b/g) || []).length;
+  const perPage = pages ? Math.round(words / pages) : 0;
+
+  const checks = [];
+  // The single most important one: can the ATS read anything at all?
+  if (!ok || words < 40) {
+    checks.push({ pass: false, critical: true, label: 'Your resume is machine-readable',
+      detail: 'Almost no text could be extracted — this looks like a scanned image or heavily graphic layout. Most ATS will read a blank page and auto-reject.' });
+  } else {
+    checks.push({ pass: true, label: 'Your resume is machine-readable', detail: `${words} words extracted cleanly across ${pages} page${pages === 1 ? '' : 's'}.` });
+  }
+  checks.push(email
+    ? { pass: true, label: 'Email is readable', detail: email }
+    : { pass: false, critical: true, label: 'Email is readable', detail: 'No email address found in the extracted text — recruiters may not be able to contact you.' });
+  checks.push(phone
+    ? { pass: true, label: 'Phone number is readable', detail: phone.trim() }
+    : { pass: false, label: 'Phone number is readable', detail: 'No phone number detected. If it\'s in a header/text box, ATS often drops it.' });
+  checks.push(sections.length >= 2
+    ? { pass: true, label: 'Standard section headings found', detail: sections.map(s => s[0].toUpperCase() + s.slice(1)).join(', ') }
+    : { pass: false, label: 'Standard section headings found', detail: 'Use plain headings like "Experience", "Education", "Skills" — ATS look for these exact words.' });
+  checks.push(dates >= 2
+    ? { pass: true, label: 'Dates parsed correctly', detail: `${dates} year values detected.` }
+    : { pass: false, label: 'Dates parsed correctly', detail: 'Few or no years found — add clear ranges like "2022 – 2024".' });
+  if (ok && words >= 40) {
+    checks.push(perPage >= 180 && perPage <= 900
+      ? { pass: true, label: 'Healthy text density', detail: `${perPage} words per page.` }
+      : { pass: false, label: 'Healthy text density',
+          detail: perPage < 180 ? `Only ${perPage} words per page — content may be trapped in images, tables or columns.` : `${perPage} words per page is very dense; recruiters skim.` });
+  }
+  checks.push(linkedin
+    ? { pass: true, label: 'LinkedIn URL readable', detail: 'Found in the extracted text.' }
+    : { pass: false, label: 'LinkedIn URL readable', detail: 'Add your LinkedIn URL as plain text (not just a hyperlinked word).' });
+
+  const passed = checks.filter(c => c.pass).length;
+  return { checks, passed, total: checks.length, text: t, words };
+}
+
 const GENERIC_SCAN = 'Parsing document structure… reading sections: SUMMARY, EXPERIENCE, EDUCATION, SKILLS… evaluating bullet points for quantified results… cross-checking action verbs… measuring keyword density against target-role benchmarks… validating single-column ATS-safe layout… checking date formats and section headings… assessing readability and length…';
 
 // Words worth highlighting green as the "AI" reads them
@@ -206,17 +271,39 @@ async function scoreResume() {
       return result;
     })();
 
+    // The ATS extraction check runs locally (no AI) alongside the scoring.
+    const ats = atsExtract(selectedFile).then(atsChecks).catch(() => null);
+
     // Real scoring runs in parallel with the scan — result held until 25s pass.
-    const [result] = await Promise.all([scoring, minWait]);
+    const [result, atsResult] = await Promise.all([scoring, ats, minWait]);
     finishScan();
     await new Promise(r => setTimeout(r, 400)); // let the bar hit 100%
-    renderResult(result);
+    renderResult(result, atsResult);
   } catch (e) {
     finishScan();
     el('scoreLoading').style.display = 'none';
     el('scoreUpload').style.display = 'block';
     showError('Sorry — scoring is busy right now. Please try again in a moment.');
   }
+}
+
+// Render the "what the ATS actually sees" panel.
+function renderAts(ats) {
+  const box = el('atsPanel');
+  if (!box) return;
+  if (!ats) { box.style.display = 'none'; return; }
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  box.style.display = 'block';
+  const failedCritical = ats.checks.some(c => !c.pass && c.critical);
+  el('atsScore').textContent = `${ats.passed}/${ats.total} checks passed`;
+  el('atsScore').className = 'ats-score ' + (failedCritical ? 'bad' : ats.passed === ats.total ? 'ok' : 'warn');
+  el('atsList').innerHTML = ats.checks.map(c => `
+    <div class="ats-item ${c.pass ? 'pass' : c.critical ? 'fail-critical' : 'fail'}">
+      <span class="ats-mark">${c.pass ? '✓' : c.critical ? '✕' : '!'}</span>
+      <div><div class="ats-label">${esc(c.label)}</div><div class="ats-detail">${esc(c.detail)}</div></div>
+    </div>`).join('');
+  const peek = el('atsText');
+  if (peek) peek.textContent = (ats.text || '').slice(0, 1200) || 'Nothing could be extracted from this file.';
 }
 
 function verdictFor(score) {
@@ -226,9 +313,10 @@ function verdictFor(score) {
   return { t: '🚨 At risk — likely auto-rejected by ATS' };
 }
 
-function renderResult(r) {
+function renderResult(r, ats) {
   el('scoreLoading').style.display = 'none';
   el('scoreResult').style.display = 'block';
+  renderAts(ats);
 
   const overall = Math.max(0, Math.min(100, Math.round(r.overall || 0)));
   el('scoreVerdict').textContent = r.verdict || verdictFor(overall).t;
