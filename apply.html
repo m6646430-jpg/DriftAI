@@ -21,6 +21,15 @@
     .aa-sec h3 { font-size: 15px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
     .aa-copy { font-size: 12px; font-weight: 700; color: #a78bfa; cursor: pointer; background: none; border: none; }
     .aa-sec p, .aa-sec li { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.65; }
+    .rel-pill { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 5px; margin-right: 7px; vertical-align: 1px; }
+    .rel-pill.rel-hi { background: rgba(52,211,153,0.16); color: #34d399; }
+    .rel-pill.rel-mid { background: rgba(251,191,36,0.16); color: #fbbf24; }
+    .rel-pill.rel-lo { background: rgba(148,163,184,0.16); color: #94a3b8; }
+    .rel-why { color: rgba(255,255,255,0.4); font-size: 12px; font-style: italic; }
+    .aa-trimmed { margin-top: 10px; }
+    .aa-trimmed summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #a78bfa; }
+    .aa-trimmed ul { margin: 10px 0 0 18px; }
+    .aa-trimmed li { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
     .aa-kw { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
     .aa-kw span { font-size: 11px; background: rgba(96,165,250,0.12); color: #93c5fd; padding: 3px 9px; border-radius: 6px; }
     .aa-qa { margin-bottom: 12px; }
@@ -90,6 +99,7 @@
       <h3>Tailored resume <button class="aa-copy" data-copy="resume">Copy</button></h3>
       <p id="aaSummary"></p>
       <ul id="aaBullets"></ul>
+      <div class="aa-trimmed" id="aaTrimmed" style="display:none;"></div>
       <div class="aa-kw" id="aaKeywords"></div>
     </div>
 

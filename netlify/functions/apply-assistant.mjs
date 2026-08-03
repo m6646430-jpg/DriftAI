@@ -18,7 +18,11 @@ Return ONLY JSON in exactly this shape:
 {
   "match_score": <integer 0-100: how well this candidate fits THIS role>,
   "summary": "<2-3 sentence professional summary tailored to this role>",
-  "bullets": ["<4-6 tailored resume bullet points from their REAL experience, quantified where supported>"],
+  "bullets": [
+    {"text": "<a tailored resume bullet from their REAL experience, quantified where supported>",
+     "relevance": <integer 0-100: how directly this bullet supports THIS posting>,
+     "why": "<3-8 words: what makes it relevant, or why it's weak for this role>"}
+  ],
   "keywords": ["<8-12 skills/keywords this job screens for that should appear>"],
   "cover_letter": "<a concise, specific 150-220 word cover letter for this exact role — no fluff, based on their real background>",
   "answers": [
@@ -29,6 +33,11 @@ Return ONLY JSON in exactly this shape:
   ]
 }
 Rules:
+- "bullets": return 7-9 bullets ranked by "relevance", highest first. Score honestly and
+  SPREAD the scores — a bullet that only matters for a different kind of role should score
+  low (20-50), not 80. Prefer bullets that are unique (each should add something new); if two
+  bullets say the same thing, score the weaker one down. The candidate will keep the top few
+  and cut the rest, so the ranking must be meaningful.
 - "answers": 3-5 questions you CAN answer from the resume (e.g. "Why are you a fit?", "Describe relevant experience", "Biggest achievement").
 - "needs_you": 2-4 things only the candidate knows — e.g. expected salary, earliest start date, work authorization / visa status if not stated in the resume, willingness to relocate. Keep it short.
 - Be honest: if their background is a different field, say so briefly in the summary; don't fake a fit.
@@ -68,6 +77,14 @@ export default async (req) => {
     try { r = JSON.parse(text); } catch { const s = text.indexOf('{'), e = text.lastIndexOf('}'); r = JSON.parse(text.slice(s, e + 1)); }
     r.match_score = Math.max(0, Math.min(100, Math.round(Number(r.match_score) || 0)));
     ['bullets', 'keywords', 'answers', 'needs_you'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
+    // Normalise bullets to {text, relevance, why} and rank most-relevant first,
+    // so the client can cut the weakest lines when space is tight.
+    r.bullets = r.bullets
+      .map(b => typeof b === 'string'
+        ? { text: b, relevance: 70, why: '' }
+        : { text: String(b.text || ''), relevance: Math.max(0, Math.min(100, Math.round(Number(b.relevance) || 0))), why: String(b.why || '') })
+      .filter(b => b.text)
+      .sort((a, b) => b.relevance - a.relevance);
     return Response.json(r, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('apply-assistant failed', e);

@@ -23,10 +23,18 @@ ${resume}
 Return ONLY JSON in exactly this shape:
 {
   "summary": "<2-3 sentence professional summary tailored to this exact role & JD>",
-  "bullets": ["<5-8 rewritten resume bullet points from their REAL experience, reframed to match this posting, quantified where the resume supports it>"],
+  "bullets": [
+    {"text": "<a rewritten bullet from their REAL experience, reframed to this posting>",
+     "relevance": <integer 0-100: how directly it supports THIS posting>,
+     "why": "<3-8 words on why it's strong or weak here>"}
+  ],
   "keywords": ["<8-12 skills/keywords THIS job screens for that should appear>"],
   "gap_note": "<one honest sentence on the biggest gap between the resume and this posting>"
 }
+Return 7-9 bullets ranked by "relevance", highest first, and SPREAD the scores honestly — a
+bullet that matters mainly for a different kind of role should score low (20-50). Prefer
+unique bullets; if two overlap, score the weaker one down. The weakest get cut when the
+resume must fit one page.
 Output ONLY the JSON.`;
 }
 
@@ -64,6 +72,13 @@ export default async (req) => {
     try { r = JSON.parse(text); } catch { const s = text.indexOf('{'), e = text.lastIndexOf('}'); r = JSON.parse(text.slice(s, e + 1)); }
     if (!Array.isArray(r.bullets)) r.bullets = [];
     if (!Array.isArray(r.keywords)) r.keywords = [];
+    // Normalise + rank so the weakest lines are the ones cut for space.
+    r.bullets = r.bullets
+      .map(b => typeof b === 'string'
+        ? { text: b, relevance: 70, why: '' }
+        : { text: String(b.text || ''), relevance: Math.max(0, Math.min(100, Math.round(Number(b.relevance) || 0))), why: String(b.why || '') })
+      .filter(b => b.text)
+      .sort((a, b) => b.relevance - a.relevance);
     return Response.json(r, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('agent-tailor failed', e);

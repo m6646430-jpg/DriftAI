@@ -11,6 +11,13 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const safeUrl = u => /^https?:\/\//i.test(u || '') ? esc(u) : '#';
+  // Bullets may be plain strings (older saved apps) or {text, relevance, why}
+  // from the relevance-weighted tailor. Normalise + rank, strongest first.
+  const bulletList = t => ((t && t.bullets) || [])
+    .map(b => typeof b === 'string' ? { text: b, relevance: 70, why: '' } : b)
+    .filter(b => b && b.text)
+    .sort((a, b) => (b.relevance || 0) - (a.relevance || 0));
+  const KEEP_N = 5;
 
   // ---------- storage (localStorage demo) ----------
   const KEY_C = 'ds_admin_clients', KEY_A = 'ds_admin_apps';
@@ -73,7 +80,7 @@
   <h3 style="color:#4f46e5;">Professional Summary</h3>
   <p>${esc(t.summary || '')}</p>
   <h3 style="color:#4f46e5;">Key Achievements</h3>
-  <ul>${(t.bullets || []).map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+  <ul>${bulletList(t).slice(0, KEEP_N).map(b => `<li>${esc(b.text)}</li>`).join('')}</ul>
   <h3 style="color:#4f46e5;">Skills &amp; Keywords</h3>
   <p>${(t.keywords || []).map(esc).join(' &middot; ')}</p>
   <hr/>
@@ -142,10 +149,12 @@
     return {
       summary: `Professional targeting ${job.role} at ${job.company}, with directly relevant experience reframed to this posting.`,
       bullets: [
-        `Delivered results relevant to ${job.role}, quantified where the resume supports it.`,
-        `Applied core skills this posting screens for.`,
-        `Reframed real achievements to match the job description.`,
-        `Highlighted ${job.category || 'domain'} experience for ${job.company}.`,
+        { text: `Delivered results relevant to ${job.role}, quantified where the resume supports it.`, relevance: 94, why: 'directly on target' },
+        { text: `Applied core skills this posting screens for.`, relevance: 87, why: 'keyword match' },
+        { text: `Reframed real achievements to match the job description.`, relevance: 72, why: 'supports the JD' },
+        { text: `Highlighted ${job.category || 'domain'} experience for ${job.company}.`, relevance: 65, why: 'domain fit' },
+        { text: 'Maintained documentation and internal processes.', relevance: 44, why: 'supporting duty' },
+        { text: 'Assisted with ad-hoc administrative tasks.', relevance: 22, why: 'not in this JD' },
       ],
       keywords: ['ATS', 'Communication', 'Ownership', job.category || 'Skills', 'Metrics', 'Collaboration'],
       gap_note: '[DEMO] Real AI tailoring runs on the deployed site.',
@@ -185,7 +194,7 @@
       for (const { job, match } of picks) {
         if (prog) prog.textContent = `Matching + tailoring ${done + 1} of ${picks.length} — ${job.role} @ ${job.company} (${match}% fit)…`;
         const t = await tailorAgent(client.resume, job);
-        const tailoredText = (t.summary || '') + '\n' + (t.bullets || []).join('\n');
+        const tailoredText = (t.summary || '') + '\n' + bulletList(t).map(b => b.text).join('\n');
         const qa = await qaAgent(tailoredText, job);
         apps.unshift({
           id: uid(), clientId: client.id, clientName: client.name,
@@ -294,7 +303,7 @@
           <summary>View tailored resume + QA</summary>
           <div class="app-body">
             <p class="app-summary">${esc(a.tailor.summary || '')}</p>
-            <ul>${(a.tailor.bullets || []).map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+            <ul>${bulletList(a.tailor).map((b, i) => `<li${i >= KEEP_N ? ' style="opacity:.45"' : ''}>${esc(b.text)} <span style="font-size:10px;opacity:.6">${b.relevance}%${i >= KEEP_N ? ' · trimmed' : ''}</span></li>`).join('')}</ul>
             <div class="app-kw">${(a.tailor.keywords || []).map(k => `<span>${esc(k)}</span>`).join('')}</div>
             <p class="app-qa"><strong>QA:</strong> ${esc(a.qa.reason || '')}</p>
             ${(a.qa.issues || []).length ? `<ul class="app-issues">${a.qa.issues.map(i => `<li>⚠️ ${esc(i)}</li>`).join('')}</ul>` : ''}

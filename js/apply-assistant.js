@@ -75,7 +75,7 @@
     $('aaResult').style.display = 'block';
     $('aaMatch').textContent = (r.match_score || 0) + '%';
     $('aaSummary').textContent = r.summary || '';
-    $('aaBullets').innerHTML = (r.bullets || []).map(b => `<li>${esc(b)}</li>`).join('');
+    renderBullets(r);
     $('aaKeywords').innerHTML = (r.keywords || []).map(k => `<span>${esc(k)}</span>`).join('');
     $('aaCover').textContent = r.cover_letter || '';
     $('aaAnswers').innerHTML = (r.answers || []).map(qa => `<div class="aa-qa"><div class="q">${esc(qa.q)}</div><div class="a">${esc(qa.a)}</div></div>`).join('') || '<p style="color:rgba(255,255,255,0.4);">No standard questions detected.</p>';
@@ -84,6 +84,33 @@
     $('aaNeeds').innerHTML = needs.map((n, i) => `<label>${esc(n.q)} <span class="why" data-note="${i}">(${esc(n.why || '')})</span></label><input data-need="${i}" placeholder="Your answer" />`).join('');
     prefillSaved(needs);
     if (j.url && /^https?:\/\//.test(j.url)) $('aaOpen').href = j.url; else $('aaOpen').style.display = 'none';
+  }
+
+  // ---- relevance-weighted cutting ----
+  // The AI ranks every bullet by how directly it supports THIS posting. We keep
+  // the strongest KEEP_N and show the rest as "trimmed", with the reason — so a
+  // long resume loses its weakest lines, not its most recent ones.
+  const KEEP_N = 5;
+  function bulletList(r) {
+    return (r.bullets || []).map(b => typeof b === 'string' ? { text: b, relevance: 70, why: '' } : b)
+      .filter(b => b && b.text)
+      .sort((a, b) => (b.relevance || 0) - (a.relevance || 0));
+  }
+  function relClass(n) { return n >= 75 ? 'rel-hi' : n >= 50 ? 'rel-mid' : 'rel-lo'; }
+  function renderBullets(r) {
+    const all = bulletList(r);
+    const keep = all.slice(0, KEEP_N), cut = all.slice(KEEP_N);
+    $('aaBullets').innerHTML = keep.map(b => `
+      <li><span class="rel-pill ${relClass(b.relevance)}">${b.relevance}%</span> ${esc(b.text)}</li>`).join('');
+    const box = $('aaTrimmed');
+    if (!box) return;
+    if (!cut.length) { box.style.display = 'none'; return; }
+    box.style.display = '';
+    box.innerHTML = `
+      <details>
+        <summary>✂️ ${cut.length} weaker line${cut.length === 1 ? '' : 's'} trimmed for this role — see what was cut</summary>
+        <ul>${cut.map(b => `<li><span class="rel-pill ${relClass(b.relevance)}">${b.relevance}%</span> ${esc(b.text)}${b.why ? `<span class="rel-why"> — ${esc(b.why)}</span>` : ''}</li>`).join('')}</ul>
+      </details>`;
   }
 
   // Auto-fill "needs you" answers the student saved on a previous application,
@@ -109,7 +136,7 @@
   // ---- copy ----
   function block(kind) {
     if (!DATA) return '';
-    if (kind === 'resume') return `TAILORED SUMMARY\n${DATA.summary}\n\nKEY ACHIEVEMENTS\n${(DATA.bullets || []).map(b => '• ' + b).join('\n')}\n\nKEYWORDS: ${(DATA.keywords || []).join(', ')}`;
+    if (kind === 'resume') return `TAILORED SUMMARY\n${DATA.summary}\n\nKEY ACHIEVEMENTS\n${bulletList(DATA).slice(0, KEEP_N).map(b => '• ' + b.text).join('\n')}\n\nKEYWORDS: ${(DATA.keywords || []).join(', ')}`;
     if (kind === 'cover') return DATA.cover_letter || '';
     if (kind === 'answers') return (DATA.answers || []).map(qa => `Q: ${qa.q}\nA: ${qa.a}`).join('\n\n');
     return '';
@@ -135,7 +162,15 @@
     return {
       match_score: 88,
       summary: `[DEMO] Results-driven professional targeting ${j.role}${j.company ? ' at ' + j.company : ''}, with directly relevant experience. Real AI output appears on the live site.`,
-      bullets: ['Led a project that improved a key metric by 30%.', 'Owned a system used by thousands of users.', 'Collaborated cross-functionally to ship on time.', 'Mentored teammates and raised delivery quality.'],
+      bullets: [
+        { text: `Led a project that improved a key metric by 30%.`, relevance: 92, why: 'quantified, core to this role' },
+        { text: 'Owned a system used by thousands of users.', relevance: 85, why: 'scale matches the posting' },
+        { text: 'Collaborated cross-functionally to ship on time.', relevance: 74, why: 'teamwork requirement' },
+        { text: 'Mentored teammates and raised delivery quality.', relevance: 61, why: 'secondary to this role' },
+        { text: 'Maintained internal documentation.', relevance: 48, why: 'supporting duty' },
+        { text: 'Handled routine ticket triage.', relevance: 31, why: 'not asked for in this JD' },
+        { text: 'Organised team social events.', relevance: 14, why: 'unrelated to the role' },
+      ],
       keywords: ['Communication', 'Ownership', 'Problem-solving', 'Collaboration', 'Metrics', 'Leadership'],
       cover_letter: `Dear Hiring Team,\n\n[DEMO cover letter] I'm excited to apply for the ${j.role} role${j.company ? ' at ' + j.company : ''}. My background lines up closely with what you're looking for, and I'd bring immediate value. On the live site this is written from your real resume.\n\nBest,\nYour name`,
       answers: [
